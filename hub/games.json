@@ -1,1 +1,92 @@
-[]
+[
+  {
+    "id": "snake",
+    "nombre": "Snake Multijugador",
+    "descripcion": "El snake de siempre, pero varios jugadores en el mismo tablero a la vez por WebSocket.",
+    "dificultad": 1,
+    "tecnologias": ["websocket", "canvas"],
+    "estado": "proximamente",
+    "ruta": null
+  },
+  {
+    "id": "cascada",
+    "nombre": "Cascada",
+    "descripcion": "Piezas que caen, estilo propio. Modo versus: las lineas que completas le mandan basura al rival.",
+    "dificultad": 2,
+    "tecnologias": ["websocket", "canvas"],
+    "estado": "proximamente",
+    "ruta": null
+  },
+  {
+    "id": "buscaminas-coop",
+    "nombre": "Buscaminas Coop",
+    "descripcion": "El buscaminas clasico pero cooperativo: varios jugadores destapan el mismo tablero y ven los cursores de los demas en vivo.",
+    "dificultad": 3,
+    "tecnologias": ["websocket", "dom"],
+    "estado": "proximamente",
+    "ruta": null
+  },
+  {
+    "id": "blastzone",
+    "nombre": "Blastzone",
+    "descripcion": "Grid, bombas con temporizador y colisiones. El servidor manda para que nadie haga trampa con su posicion.",
+    "dificultad": 4,
+    "tecnologias": ["websocket", "canvas", "server-authority"],
+    "estado": "proximamente",
+    "ruta": null
+  },
+  {
+    "id": "trivia",
+    "nombre": "Trivia",
+    "descripcion": "Salas con codigo para unirse, temporizador sincronizado y ranking en vivo.",
+    "dificultad": 5,
+    "tecnologias": ["websocket", "salas"],
+    "estado": "proximamente",
+    "ruta": null
+  },
+  {
+    "id": "dibuja-y-adivina",
+    "nombre": "Dibuja y Adivina",
+    "descripcion": "Un jugador dibuja en canvas y transmite los trazos por socket, los demas adivinan por chat.",
+    "dificultad": 6,
+    "tecnologias": ["websocket", "canvas"],
+    "estado": "proximamente",
+    "ruta": null
+  },
+  {
+    "id": "devora",
+    "nombre": "Devora",
+    "descripcion": "Bolitas que crecen comiendose entre si. Mundo compartido, el servidor corre un game loop a varios ticks por segundo.",
+    "dificultad": 7,
+    "tecnologias": ["websocket", "canvas", "game-loop"],
+    "estado": "proximamente",
+    "ruta": null
+  },
+  {
+    "id": "hundir-la-flota",
+    "nombre": "Hundir la Flota",
+    "descripcion": "Por turnos, dos jugadores, tableros ocultos. El servidor le esconde a cada jugador la info del otro.",
+    "dificultad": 8,
+    "tecnologias": ["websocket", "estado-privado"],
+    "estado": "proximamente",
+    "ruta": null
+  },
+  {
+    "id": "turno",
+    "nombre": "Turno",
+    "descripcion": "Cartas por turnos estilo mazo clasico. Reglas y jugadas validadas en el servidor, con reconexion.",
+    "dificultad": 9,
+    "tecnologias": ["websocket", "maquina-de-estados"],
+    "estado": "proximamente",
+    "ruta": null
+  },
+  {
+    "id": "mazmorra",
+    "nombre": "Mazmorra",
+    "descripcion": "Roguelike por turnos con mapa generado y progreso guardado por usuario. El proyecto final del arcade.",
+    "dificultad": 10,
+    "tecnologias": ["websocket", "base-de-datos", "auth"],
+    "estado": "proximamente",
+    "ruta": null
+  }
+]

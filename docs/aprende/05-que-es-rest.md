@@ -1,4 +1,4 @@
-# 03 – Qué es REST
+# 05 – Qué es REST
 
 REST es un **estilo** para diseñar APIs sobre HTTP (no es un protocolo ni una librería). La idea
 central: todo son **recursos** (juegos, jugadores, partidas...), identificados por una URL, y usas

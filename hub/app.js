@@ -1,5 +1,30 @@
+function crearTarjeta(juego) {
+  const jugable = juego.estado === 'jugable';
+
+  const tags = juego.tecnologias
+    .map((tag) => `<span class="tag">${tag}</span>`)
+    .join('');
+
+  const accion = jugable
+    ? `<a class="btn-jugar" href="${juego.ruta}">Jugar</a>`
+    : `<span class="btn-jugar deshabilitado">Próximamente</span>`;
+
+  const articulo = document.createElement('article');
+  articulo.className = 'card' + (jugable ? ' jugable' : '');
+  articulo.innerHTML = `
+    <div class="card-header">
+      <h3>${juego.nombre}</h3>
+      <span class="badge-dificultad" title="Dificultad ${juego.dificultad}/10">${juego.dificultad}/10</span>
+    </div>
+    <p class="card-desc">${juego.descripcion}</p>
+    <div class="card-tags">${tags}</div>
+    ${accion}
+  `;
+  return articulo;
+}
+
 async function cargarJuegos() {
-  const lista = document.getElementById('lista-juegos');
+  const grid = document.getElementById('grid-juegos');
 
   try {
     const respuesta = await fetch('/api/juegos');
@@ -7,15 +32,16 @@ async function cargarJuegos() {
     const juegos = await respuesta.json();
 
     if (juegos.length === 0) {
-      lista.innerHTML = '<li>Todavía no hay juegos publicados. El primero viene pronto.</li>';
+      grid.innerHTML = '<p class="aviso">Todavía no hay juegos publicados. El primero viene pronto.</p>';
       return;
     }
 
-    lista.innerHTML = juegos
-      .map((juego) => `<li><a href="${juego.ruta}">${juego.nombre}</a> — ${juego.descripcion}</li>`)
-      .join('');
+    grid.innerHTML = '';
+    juegos
+      .sort((a, b) => a.dificultad - b.dificultad)
+      .forEach((juego) => grid.appendChild(crearTarjeta(juego)));
   } catch (error) {
-    lista.innerHTML = `<li>No se pudo cargar la lista de juegos: ${error.message}</li>`;
+    grid.innerHTML = `<p class="aviso">No se pudo cargar la lista de juegos: ${error.message}</p>`;
   }
 }
 

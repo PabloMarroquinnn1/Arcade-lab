@@ -1,4 +1,4 @@
-# 08 – Docker y despliegue
+# 12 – Docker y despliegue
 
 ## Qué es Docker, en corto
 

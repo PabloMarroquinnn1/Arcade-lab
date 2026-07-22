@@ -1,4 +1,4 @@
-# 09 – Gitflow en este repo
+# 13 – Gitflow en este repo
 
 Gitflow completo (con ramas `release/*` y `hotfix/*`) es mucho para un proyecto solo. Usamos una
 versión simplificada, con dos ramas fijas y ramas temporales:
@@ -49,7 +49,7 @@ git push origin main
 ```
 
 Y en el servidor: `git pull origin main && docker compose up --build -d` (ver
-[08](08-docker-y-despliegue.md)).
+[12](12-docker-y-despliegue.md)).
 
 ## Resumen visual
 

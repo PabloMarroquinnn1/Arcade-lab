@@ -1,4 +1,4 @@
-# 02 – Qué es una API
+# 04 – Qué es una API
 
 API = *Application Programming Interface*. Es el "menú" de operaciones que un programa expone para
 que otro programa lo use, sin que este último necesite saber cómo está hecho por dentro.
@@ -13,7 +13,7 @@ menú, y el mesero te trae el resultado. No te importa cómo está montada la co
 - **API HTTP propia**: el `server.js` de este repo expone `GET /api/juegos`. Es tu backend
   ofreciendo datos a tu frontend.
 - **API en tiempo real**: cuando migremos Pong, el "menú" de operaciones no será HTTP sino eventos
-  de WebSocket (`movePaddle`, `gameState`...) — ver [06](06-websockets-vs-http.md).
+  de WebSocket (`movePaddle`, `gameState`...) — ver [10](10-websockets-vs-http.md).
 
 ## Ejemplo real de este repo
 

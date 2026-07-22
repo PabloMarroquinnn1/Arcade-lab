@@ -1,4 +1,4 @@
-# 04 – Qué es CORS (y por qué da tanto dolor de cabeza)
+# 06 – Qué es CORS (y por qué da tanto dolor de cabeza)
 
 CORS = *Cross-Origin Resource Sharing*. Es una regla de seguridad que aplican **los navegadores**
 (no los servidores) para evitar que una página web le "robe" datos a otra sin permiso.
