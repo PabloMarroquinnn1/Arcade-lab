@@ -10,10 +10,18 @@ versión simplificada, con dos ramas fijas y ramas temporales:
 - **`develop`** — rama de integración. Todo lo nuevo se junta aquí primero y se prueba antes de
   pasar a producción.
 
-## Las ramas temporales: `feature/*`
+## Las ramas temporales
 
-Cada cosa nueva (un juego, una sección de docs, un cambio de infra) se hace en su propia rama,
-creada desde `develop`:
+Cada cosa nueva se hace en su propia rama, creada desde `develop`. El nombre de la rama empieza
+con un **prefijo** que dice qué tipo de cambio es — así, con solo mirar la lista de ramas (o el
+historial de `develop`), se entiende qué se estuvo haciendo sin tener que abrir cada una:
+
+| Prefijo     | Para qué                                                    | Ejemplo |
+|-------------|---------------------------------------------------------------|---------|
+| `feature/`  | Funcionalidad nueva (un juego, una capacidad nueva del hub)   | `feature/juego-snake` |
+| `docs/`     | Solo documentación, sin tocar código                           | `docs/prefijos-de-rama` |
+| `fix/`      | Corregir algo que está roto                                    | `fix/paddle-atraviesa-el-borde` |
+| `chore/`    | Mantenimiento: renombrar, configuración, dependencias           | `chore/actualiza-express` |
 
 ```bash
 git checkout develop
@@ -57,9 +65,9 @@ Y en el servidor: `git pull origin main && docker compose up --build -d` (ver
 ## Resumen visual
 
 ```
-feature/juego-pong    ----\
-                            \
-feature/docs-aprende  ------> develop -----> main -----> (servidor)
-                            /
-feature/juego-snake   ----/
+feature/juego-pong  ----\
+                          \
+docs/aprende-cors    ------> develop -----> main -----> (servidor)
+                          /
+fix/paddle-en-el-borde -/
 ```

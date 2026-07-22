@@ -50,8 +50,9 @@ Cada archivo enseña un concepto y, cuando aplica, apunta a código real de este
 
 - **`main`** → siempre lo que corre en el servidor. Solo recibe merges desde `develop`.
 - **`develop`** → rama de integración; ahí se juntan las features antes de pasar a producción.
-- **`feature/lo-que-sea`** → rama corta creada desde `develop` para UNA cosa (un juego, una sección
-  de docs, un fix). Se mergea de vuelta a `develop` cuando funciona, y se borra.
+- **`feature/`, `docs/`, `fix/`, `chore/`** → ramas cortas creadas desde `develop` para UNA cosa,
+  con un prefijo que dice qué tipo de cambio es (funcionalidad, documentación, corrección,
+  mantenimiento). Se mergean de vuelta a `develop` cuando funcionan, y se borran.
 
 Detalle completo en [`docs/aprende/13-gitflow-en-este-repo.md`](docs/aprende/13-gitflow-en-este-repo.md).
 
