@@ -394,17 +394,6 @@ section {
   100% { transform: rotate(360deg); }
 }
 
-/* Footer */
-footer {
-  text-align: center;
-  padding: 3rem 0;
-  color: var(--muted);
-  border-top: 1px solid var(--glass-border);
-  margin-top: 3rem;
-  font-size: 0.95rem;
-  position: relative;
-}
-
 /* Entrance Animations for Initial Load */
 @keyframes fadeIn {
   from { opacity: 0; }
