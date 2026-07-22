@@ -1,4 +1,4 @@
-# 06 – WebSockets vs HTTP
+# 10 – WebSockets vs HTTP
 
 ## HTTP: pregunta-respuesta
 

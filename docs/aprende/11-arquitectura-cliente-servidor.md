@@ -1,4 +1,4 @@
-# 07 – Arquitectura cliente-servidor de este arcade
+# 11 – Arquitectura cliente-servidor de este arcade
 
 ## Las dos partes
 
@@ -21,7 +21,7 @@ Un solo proceso Node (`server.js`) hace tres cosas:
 3. Expone endpoints de API (`/api/...`) y, cuando lleguen juegos en tiempo real, un servidor de
    Socket.IO en el mismo proceso.
 
-Todo en un solo contenedor Docker (ver [08](08-docker-y-despliegue.md)) porque tu servidor tiene
+Todo en un solo contenedor Docker (ver [12](12-docker-y-despliegue.md)) porque tu servidor tiene
 8GB de RAM — un proceso Node compartido es mucho más liviano que uno por juego.
 
 ## Juegos estáticos vs juegos con servidor
@@ -33,4 +33,4 @@ Todo en un solo contenedor Docker (ver [08](08-docker-y-despliegue.md)) porque t
 
 `games.json` (en `hub/`) es la lista que alimenta el hub — cada juego que agregues se registra ahí
 con su nombre, ruta y una descripción corta. El hub la lee vía `GET /api/juegos` (ver
-[03](03-que-es-rest.md)).
+[05](05-que-es-rest.md)).
