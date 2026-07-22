@@ -27,8 +27,8 @@ const app = express();
 ```
 
 `require('express')` carga la librería. `express()` crea una aplicación web lista para recibir
-peticiones — sin escribir vos mismo un servidor HTTP desde cero (parseo de rutas, manejo de
-conexiones, etc.), que es un problema grande y ya resuelto.
+peticiones — sin escribir vos mismo un servidor HTTP desde cero (entender qué pidió el navegador,
+manejar cada conexión, etc.), que es un problema grande y ya resuelto.
 
 ## npm, en corto
 

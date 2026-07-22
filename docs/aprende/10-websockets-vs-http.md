@@ -24,7 +24,8 @@ sin que ellos lo pidan.
 ## Socket.IO (la librería, no el protocolo puro)
 
 Este proyecto usa `socket.io`, que por debajo usa WebSocket pero agrega comodidades: reconexión
-automática, fallback si WebSocket no está disponible, y un sistema simple de eventos con nombre.
+automática si se corta la conexión, un plan B (usar peticiones normales en vez de WebSocket) si el
+navegador o la red no lo permiten, y un sistema simple de eventos con nombre.
 
 Servidor:
 
