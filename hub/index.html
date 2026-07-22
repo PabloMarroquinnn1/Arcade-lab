@@ -1,41 +1,67 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Arcade Lab</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arcade Lab | Aprende Jugando</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <h1>Arcade Lab</h1>
-  <p>Un arcade casero para aprender desarrollo web jugando.</p>
-</header>
+  <!-- Animated Background Elements -->
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
 
-<main>
-  <section id="juegos">
-    <h2>Juegos</h2>
-    <p class="subtitulo">10 juegos planeados, de menor a mayor dificultad. Se van agregando de a uno.</p>
-    <div id="grid-juegos" class="grid-juegos">
-      <p class="aviso">Cargando...</p>
-    </div>
-  </section>
+  <div class="glass-container">
+    <header>
+      <div class="logo-container">
+        <h1 class="glow-text">Arcade Lab</h1>
+      </div>
+      <p class="subtitle">Un arcade casero para aprender desarrollo web jugando.</p>
+    </header>
 
-  <section id="aprende">
-    <h2>Aprende</h2>
-    <p>
-      Los apuntes de este proyecto (qué es una API, REST, CORS, async/await, WebSockets, Docker...)
-      están en
-      <a href="https://github.com/PabloMarroquinnn1/Arcade-lab/tree/main/docs/aprende" target="_blank" rel="noopener">docs/aprende</a>
-      del repositorio.
-    </p>
-  </section>
-</main>
+    <main>
+      <section id="juegos">
+        <div class="section-header">
+          <h2>Juegos Disponibles</h2>
+          <div class="line-glow"></div>
+        </div>
+        <p class="section-desc">10 juegos planeados, de menor a mayor dificultad. Se van agregando de a uno.</p>
+        <div id="grid-juegos" class="grid-juegos">
+          <div class="loader">
+            <div class="scanner"></div>
+            <p>Cargando sistema...</p>
+          </div>
+        </div>
+      </section>
 
-<footer>
-  <p>Corriendo en un servidor casero (Ubuntu Server, i3, 8GB RAM) vía Cloudflare Tunnel.</p>
-</footer>
+      <section id="aprende">
+        <div class="section-header">
+          <h2>Aprende</h2>
+          <div class="line-glow"></div>
+        </div>
+        <div class="aprende-card">
+          <p>
+            Los apuntes de este proyecto (qué es una API, REST, CORS, async/await, WebSockets, Docker...)
+            están en
+            <a href="https://github.com/PabloMarroquinnn1/Arcade-lab/tree/main/docs/aprende" target="_blank" rel="noopener" class="neon-link">docs/aprende</a>
+            del repositorio.
+          </p>
+        </div>
+      </section>
+    </main>
 
-<script src="app.js"></script>
+    <footer>
+      <p>Corriendo en un servidor casero (Ubuntu Server, i3, 8GB RAM) vía Cloudflare Tunnel.</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
