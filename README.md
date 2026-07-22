@@ -1,11 +1,13 @@
 # Arcade Lab
 
-Arcade de minijuegos para aprender desarrollo web de verdad: JavaScript, APIs, REST, CORS,
-async/await, WebSockets y Docker — construyendo juegos jugables, corriendo en un servidor casero
-propio (Ubuntu Server 24, HP vieja, expuesto con Cloudflare Tunnel).
+Un arcade de minijuegos hecho para aprender desarrollo web construyendo cosas de verdad, no solo
+leyendo teoría. Cada juego existe para enseñar un concepto concreto (una API, CORS, WebSockets,
+Docker...), y todo lo que se va aprendiendo en el camino queda escrito en
+[`docs/aprende`](docs/aprende) — explicado desde cero, para que cualquiera pueda entrar sin saber
+programar y entender qué está pasando.
 
-No es solo una colección de juegos: cada uno existe para enseñar un concepto concreto, y los
-apuntes están en [`docs/aprende`](docs/aprende).
+Es un proyecto abierto: si estás aprendiendo a programar, todo el código y los apuntes están
+pensados para que los puedas leer, copiar y usar como te sirva.
 
 ## Estructura del repo
 
@@ -48,19 +50,21 @@ Cada archivo enseña un concepto y, cuando aplica, apunta a código real de este
 
 - **`main`** → siempre lo que corre en el servidor. Solo recibe merges desde `develop`.
 - **`develop`** → rama de integración; ahí se juntan las features antes de pasar a producción.
-- **`feature/lo-que-sea`** → rama corta creada desde `develop` para UNA cosa (un juego, una sección
-  de docs, un fix). Se mergea de vuelta a `develop` cuando funciona, y se borra.
+- **`feature/`, `docs/`, `fix/`, `chore/`** → ramas cortas creadas desde `develop` para UNA cosa,
+  con un prefijo que dice qué tipo de cambio es (funcionalidad, documentación, corrección,
+  mantenimiento). Se mergean de vuelta a `develop` cuando funcionan, y se borran.
 
-Detalle completo en [`docs/aprende/09-gitflow-en-este-repo.md`](docs/aprende/09-gitflow-en-este-repo.md).
+Detalle completo en [`docs/aprende/13-gitflow-en-este-repo.md`](docs/aprende/13-gitflow-en-este-repo.md).
 
-## Roadmap
+## Qué juegos hay planeados
 
-- [ ] Migrar Pong (WebSocket) como primer juego en tiempo real
-- [ ] Un juego estático (ej. Snake) como segundo ejemplo, sin servidor
-- [ ] Deploy en el servidor casero con Cloudflare Tunnel
+La lista completa (10 juegos, de menor a mayor dificultad, con el estado de cada uno) está en
+[`hub/games.json`](hub/games.json) y se ve en vivo como tarjetas en la página principal del arcade
+— no la repetimos acá para no tener dos lugares desactualizándose por separado.
 
 ## Stack
 
-Vanilla JS + Node.js/Express (+ Socket.IO cuando llegue el primer juego en tiempo real). Sin
-frameworks de frontend (React/Vue/Angular) a propósito: el objetivo es aprender los fundamentos,
-no la API de un framework.
+JavaScript "de toda la vida" en el frontend (sin librerías como React o Vue que agregan su propia
+forma de escribir código) + Node.js con Express en el backend. Es a propósito: la idea de este
+proyecto es entender cómo funcionan las cosas por debajo, y un framework de frontend tapa justo esa
+parte. Más detalle en [`docs/aprende/03-que-son-las-librerias.md`](docs/aprende/03-que-son-las-librerias.md).

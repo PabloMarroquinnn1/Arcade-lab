@@ -9,8 +9,10 @@ let vidas = 3;          // cambia de valor
 const nombre = 'Pablo'; // no cambia (la referencia; si es un objeto, sus propiedades sí pueden cambiar)
 ```
 
-Evita `var` — es la forma vieja, con reglas de alcance confusas. Usa `let` si va a cambiar, `const`
-si no.
+Existe una tercera forma, `var`, que es la más vieja de las tres — evítala. Tiene reglas confusas
+sobre "hasta dónde" se puede usar una variable dentro del código (a eso se le llama el *alcance* de
+la variable), y `let`/`const` resuelven ese problema. Regla simple: usa `let` si el valor va a
+cambiar, `const` si no.
 
 ## Funciones
 
@@ -70,17 +72,33 @@ tantas veces como haga falta, en vez de repetir el mismo bloque de código 10 ve
 
 ## Objetos y arrays
 
+Un **objeto** agrupa datos relacionados bajo nombres (`nombre`, `puntos`). Un **array** es una
+lista ordenada de valores.
+
 ```js
 const jugador = { nombre: 'p1', puntos: 0 };
 const juegos = ['pong', 'snake'];
-
-// Destructuring: sacar valores directo
-const { nombre, puntos } = jugador;
-const [primero] = juegos;
-
-// Spread: copiar/combinar
-const jugador2 = { ...jugador, puntos: 5 };
 ```
+
+Dos atajos que vas a ver seguido en el código de este repo:
+
+**Destructuring** — sacar valores de un objeto o array directo a variables sueltas, sin escribir
+`jugador.nombre` cada vez:
+
+```js
+const { nombre, puntos } = jugador; // nombre = 'p1', puntos = 0
+const [primero] = juegos;           // primero = 'pong'
+```
+
+**Spread (`...`)** — copiar todas las propiedades de un objeto (o valores de un array) dentro de
+otro nuevo, pudiendo sobreescribir algunas:
+
+```js
+const jugador2 = { ...jugador, puntos: 5 }; // copia jugador, pero con puntos en 5
+```
+
+`jugador2` es un objeto **nuevo** — `jugador` original no cambia. Esto importa porque evita bugs
+donde modificás un objeto sin querer en un lugar y se rompe algo en otro lugar que lo estaba usando.
 
 ## Template literals
 
@@ -90,17 +108,29 @@ const mensaje = `${nombre} tiene ${puntos} puntos`;
 
 Mejor que concatenar con `+`.
 
-## Módulos: `require` vs `import`
+## Módulos: dividir el código en archivos
 
-En este repo el backend (`server.js`) usa Node.js con `require` (CommonJS):
+Un **módulo** es, en la práctica, un archivo de JS que le presta código (funciones, variables) a
+otro archivo, en vez de tener todo el proyecto en un solo archivo enorme. Partir el código así hace
+que cada archivo tenga una responsabilidad clara y sea más fácil de encontrar algo cuando lo
+necesitás.
+
+Node.js (el motor que corre nuestro `server.js`, ver
+[03 – Qué son las librerías](03-que-son-las-librerias.md)) usa para esto la palabra `require`, para
+traer código que vive en otro lado:
 
 ```js
 const express = require('express');
 ```
 
-Si en algún momento usas `import`/`export` en el navegador (ES Modules), necesitas
-`<script type="module">`. En Node puro, sin configurar nada extra, `require` es lo que funciona
-por defecto — por eso lo usamos en `server.js`.
+Esa línea dice: "andá a buscar el código que exporta la librería `express`, y guardámelo en la
+variable `express`". Es la misma idea de "importar" que hay en casi todos los lenguajes, solo que
+con otro nombre.
+
+Si en algún momento ves `import` y `export` en vez de `require` — es otra forma de hacer
+exactamente lo mismo (se llama *ES Modules*, y es la que entienden los navegadores de forma
+nativa). Pero no es la que usamos acá: Node, sin configurar nada extra, entiende `require` por
+defecto, así que es la que vas a encontrar en todo `server.js`.
 
 ## El event loop, en una frase
 
@@ -108,4 +138,4 @@ JavaScript ejecuta una cosa a la vez, pero no se queda "esperando" tareas lentas
 pedir datos por red): las delega y sigue con lo demás, y vuelve a tu código cuando esa tarea
 termina. Eso es exactamente lo que hace posible `async/await` (ver
 [08](08-promesas-y-async-await.md)) y por lo que un servidor Node puede atender a varios jugadores
-de Pong "a la vez" sin ser multi-hilo.
+de Pong "a la vez" con un solo proceso, sin necesitar uno separado por cada jugador.

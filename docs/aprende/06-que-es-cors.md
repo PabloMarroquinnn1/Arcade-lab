@@ -34,7 +34,8 @@ la respuesta antes de dártela, porque el servidor no dijo explícitamente "conf
 
 ## Cómo se arregla (del lado del servidor)
 
-El servidor tiene que responder con una cabecera diciendo qué origins confía:
+El servidor tiene que responder con una **cabecera** (un dato extra que viaja junto a la respuesta,
+aparte del contenido en sí) diciendo qué origins confía:
 
 ```js
 const cors = require('cors');
