@@ -23,8 +23,9 @@ git checkout -b feature/juego-snake
 git push -u origin feature/juego-snake
 ```
 
-Cuando funciona, se mergea de vuelta a `develop` (en equipo esto sería un Pull Request en GitHub;
-solo, puede ser merge directo):
+Cuando funciona, se mergea de vuelta a `develop`. En un equipo esto normalmente se hace con un
+**Pull Request** en GitHub — pedís que revisen tus cambios antes de sumarlos a `develop`. Trabajando
+solo, ese paso de revisión no aplica, así que se puede mergear directo:
 
 ```bash
 git checkout develop
@@ -33,9 +34,11 @@ git push origin develop
 git branch -d feature/juego-snake
 ```
 
-`--no-ff` fuerza a que quede un commit de merge visible, aunque se pudiera hacer fast-forward — así
-el historial de `develop` muestra claramente "acá se integró la feature X", en vez de mezclarse
-como si siempre hubiera sido lineal.
+Por defecto, si `develop` no cambió mientras trabajabas en tu rama, git haría un **fast-forward**:
+movería el puntero de `develop` para adelante sin dejar rastro de que existió una rama separada —
+como si siempre hubieras escrito el código directo ahí. `--no-ff` ("no fast-forward") evita eso a
+propósito, forzando que quede un commit de merge visible, para que el historial de `develop`
+muestre claramente "acá se integró la feature X".
 
 ## Pasar de `develop` a `main` (release)
 
