@@ -52,7 +52,9 @@ docker compose up --build -d
 
 Cada vez que agregues un juego nuevo (nueva rama, merge a `develop`, merge a `main`), en el
 servidor solo haces ese `pull` + `up --build -d`. Docker reconstruye la imagen con el código nuevo
-y reemplaza el contenedor viejo, sin downtime perceptible para un proyecto de este tamaño.
+y reemplaza el contenedor viejo. Hay un corte de un par de segundos mientras cambia uno por otro
+(lo que se llama *downtime*), pero para un proyecto de este tamaño, con pocos jugadores a la vez,
+no se nota.
 
 ## Cómo entra Cloudflare Tunnel en esto
 
