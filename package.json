@@ -1,0 +1,12 @@
+{
+  "name": "arcade-lab",
+  "version": "0.1.0",
+  "description": "Arcade de minijuegos para aprender desarrollo web (JS, APIs, REST, CORS, WebSockets, Docker)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
