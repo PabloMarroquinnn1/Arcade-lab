@@ -1,4 +1,7 @@
-# 05 – Promesas y async/await
+# 08 – Promesas y async/await
+
+> Si `try/catch` todavía no te suena, primero pasá por
+> [07 – Manejo de errores: try/catch](07-manejo-de-errores-try-catch.md).
 
 ## El problema que resuelven
 
