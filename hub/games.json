@@ -1,5 +1,14 @@
 [
   {
+    "id": "pong",
+    "nombre": "Pong",
+    "descripcion": "El primer juego del arcade: dos jugadores, pelota con autoridad en el servidor, WebSocket en tiempo real.",
+    "dificultad": 0,
+    "tecnologias": ["websocket", "canvas", "server-authority"],
+    "estado": "jugable",
+    "ruta": "/games/pong/"
+  },
+  {
     "id": "snake",
     "nombre": "Snake Multijugador",
     "descripcion": "El snake de siempre, pero varios jugadores en el mismo tablero a la vez por WebSocket.",
