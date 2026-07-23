@@ -32,15 +32,29 @@ localStorage.setItem('preferencias', JSON.stringify({ volumen: 0.5, controles: '
 const preferencias = JSON.parse(localStorage.getItem('preferencias') || '{}');
 ```
 
-## Para qué lo vamos a usar en este arcade
+## Dónde ya lo usamos en este arcade
 
-Todavía no lo usamos en el código (por ahora el hub no guarda nada), pero es la herramienta
-correcta para cosas como:
+En `games/snake/solo.js`, para guardar tu mejor puntaje en el modo de un jugador:
+
+```js
+const HIGHSCORE_KEY = 'arcade-lab:snake:highscore';
+let highscore = Number(localStorage.getItem(HIGHSCORE_KEY)) || 0;
+
+// al terminar la partida, si superaste tu record:
+localStorage.setItem(HIGHSCORE_KEY, String(highscore));
+```
+
+Notá el prefijo `arcade-lab:snake:` en la clave — es solo una convención (no la exige
+`localStorage`) para evitar que, cuando otro juego del arcade también guarde algo, sus claves se
+pisen entre sí sin querer.
+
+Todavía queda para usarlo en:
 
 - Recordar el nombre que elige un jugador, sin pedírselo cada vez.
-- Guardar mejores puntajes **locales**, antes de tener una base de datos real (eso llega recién con
-  `Mazmorra`, el juego 10).
 - Recordar preferencias de la interfaz (ej. si prefiere controles de teclado o táctiles).
+- Un ranking **compartido** entre jugadores distintos ya no alcanza con esto — ese necesita
+  servidor + base de datos (llega con `Mazmorra`, el juego 10). El highscore de Snake es a
+  propósito solo tuyo, en tu navegador.
 
 ## localStorage vs base de datos
 
