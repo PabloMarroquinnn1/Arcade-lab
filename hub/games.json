@@ -10,12 +10,12 @@
   },
   {
     "id": "snake",
-    "nombre": "Snake Multijugador",
-    "descripcion": "El snake de siempre, pero varios jugadores en el mismo tablero a la vez por WebSocket.",
+    "nombre": "Snake",
+    "descripcion": "El snake de siempre. Modo solo (guarda tu record en este navegador) o 2 jugadores en vivo por WebSocket.",
     "dificultad": 1,
-    "tecnologias": ["websocket", "canvas"],
-    "estado": "proximamente",
-    "ruta": null
+    "tecnologias": ["canvas", "localstorage", "websocket"],
+    "estado": "jugable",
+    "ruta": "/games/snake/"
   },
   {
     "id": "cascada",
