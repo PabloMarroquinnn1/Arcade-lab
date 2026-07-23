@@ -29,6 +29,7 @@ app.get('/api/juegos', (req, res) => {
 });
 
 require('./games/pong/server')(io);
+require('./games/snake/server')(io);
 
 httpServer.listen(PORT, '0.0.0.0', () => {
   console.log(`Arcade Lab corriendo en http://localhost:${PORT}`);
