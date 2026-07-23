@@ -1,8 +1,6 @@
 # games/
 
-Acá va a vivir cada juego del arcade, uno por carpeta: `games/pong/`, `games/snake/`, etc. Por
-ahora está vacía porque todavía no migramos ninguno — la carpeta existe para dejar claro dónde van
-a ir.
+Cada juego del arcade vive en su propia carpeta. Por ahora: `games/pong/` y `games/snake/`.
 
 ## Dos tipos de juego, según si necesitan un servidor o no
 
@@ -21,5 +19,9 @@ dónde va el código de cada uno:
   del frontend en `games/<nombre>/`, estos juegos también agregan su lógica de servidor dentro de
   `server.js`.
 
-El primero que vamos a migrar es Pong (el prototipo original que ya funcionaba), como ejemplo de
-juego en tiempo real.
+Snake, de hecho, tiene un modo de cada tipo a la vez: `games/snake/solo.js` es 100% estático (ni
+siquiera abre un socket), y `games/snake/duo.js` + `games/snake/server.js` son en tiempo real,
+usando el mismo patrón que Pong. El detalle completo de ese patrón compartido está en
+[`docs/aprende/14-logica-de-los-juegos-en-tiempo-real.md`](../docs/aprende/14-logica-de-los-juegos-en-tiempo-real.md)
+— léelo antes de armar el próximo juego con servidor, para copiar lo que ya funciona en vez de
+reinventarlo.
