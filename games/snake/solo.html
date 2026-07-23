@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snake Solo | Arcade Lab</title>
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="hud-left">
+        <a href="/" class="badge back-link">&#8592; Arcade</a>
+        <a href="index.html" class="badge back-link">Cambiar modo</a>
+      </div>
+      <div class="hud-center">
+        <span class="score-tag solo">Puntaje <span id="score">0</span></span>
+      </div>
+      <div class="hud-right">
+        <span class="score-tag highscore">Récord <span id="highscore">0</span></span>
+      </div>
+    </header>
+
+    <main id="stage">
+      <canvas id="gameCanvas"></canvas>
+    </main>
+
+    <footer id="controls">
+      <span>Moverse: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o flechas. Click/tecla para reiniciar.</span>
+    </footer>
+  </div>
+
+  <script src="solo.js?v=1"></script>
+</body>
+</html>
