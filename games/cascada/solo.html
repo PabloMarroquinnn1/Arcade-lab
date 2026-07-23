@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cascada Solo | Arcade Lab</title>
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="hud-left">
+        <a href="/" class="badge back-link">&#8592; Arcade</a>
+        <a href="index.html" class="badge back-link">Cambiar modo</a>
+      </div>
+      <div class="hud-center">
+        <span class="score-tag solo">Puntaje <span id="score">0</span></span>
+        <span class="score-tag level">Nivel <span id="level">1</span></span>
+      </div>
+      <div class="hud-right">
+        <span class="score-tag highscore">Récord <span id="highscore">0</span></span>
+      </div>
+    </header>
+
+    <main id="stage">
+      <canvas id="gameCanvas"></canvas>
+      <div class="side-panel">
+        <span class="side-label">Siguiente</span>
+        <canvas id="nextCanvas" width="80" height="80"></canvas>
+      </div>
+    </main>
+
+    <footer id="controls">
+      <span>Mover: <kbd>A</kbd><kbd>D</kbd> o flechas &middot; Rotar: <kbd>W</kbd>/<kbd>&#8593;</kbd> &middot; Bajar: <kbd>S</kbd>/<kbd>&#8595;</kbd> &middot; Caída: <kbd>Space</kbd></span>
+    </footer>
+  </div>
+
+  <script src="solo.js?v=1"></script>
+</body>
+</html>

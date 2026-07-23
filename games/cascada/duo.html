@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cascada Versus | Arcade Lab</title>
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="hud-left">
+        <a href="/" class="badge back-link">&#8592; Arcade</a>
+        <a href="index.html" class="badge back-link">Cambiar modo</a>
+      </div>
+      <div class="hud-center">
+        <span id="role-badge" class="badge">Conectando...</span>
+      </div>
+      <div class="hud-right">
+        <span class="score-tag p1">P1 <span id="score-p1">0</span></span>
+        <span class="score-tag p2">P2 <span id="score-p2">0</span></span>
+      </div>
+    </header>
+
+    <main id="stage">
+      <div class="boards">
+        <div class="board-col">
+          <span class="board-label p1">Jugador 1</span>
+          <canvas id="board-p1"></canvas>
+        </div>
+        <div class="board-col">
+          <span class="board-label p2">Jugador 2</span>
+          <canvas id="board-p2"></canvas>
+        </div>
+      </div>
+    </main>
+
+    <footer id="controls">
+      <span>P1: <kbd>A</kbd><kbd>D</kbd> mover &middot; <kbd>W</kbd> rotar &middot; <kbd>S</kbd> bajar</span>
+      <span>P2: <kbd>&#8592;</kbd><kbd>&#8594;</kbd> mover &middot; <kbd>&#8593;</kbd> rotar &middot; <kbd>&#8595;</kbd> bajar</span>
+      <span>Caída: <kbd>Space</kbd></span>
+      <span id="spectators"></span>
+    </footer>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="duo.js?v=1"></script>
+</body>
+</html>
