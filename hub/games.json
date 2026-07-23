@@ -20,11 +20,11 @@
   {
     "id": "cascada",
     "nombre": "Cascada",
-    "descripcion": "Piezas que caen, estilo propio. Modo versus: las lineas que completas le mandan basura al rival.",
+    "descripcion": "Piezas que caen, estilo propio. Modo solo (guarda tu record en este navegador). Modo versus en camino.",
     "dificultad": 2,
-    "tecnologias": ["websocket", "canvas"],
-    "estado": "proximamente",
-    "ruta": null
+    "tecnologias": ["canvas", "localstorage"],
+    "estado": "jugable",
+    "ruta": "/games/cascada/"
   },
   {
     "id": "buscaminas-coop",
