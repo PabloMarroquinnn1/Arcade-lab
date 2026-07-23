@@ -20,9 +20,9 @@
   {
     "id": "cascada",
     "nombre": "Cascada",
-    "descripcion": "Piezas que caen, estilo propio. Modo solo (guarda tu record en este navegador). Modo versus en camino.",
+    "descripcion": "Piezas que caen, estilo propio. Modo solo, o versus en vivo: cada linea que completas le manda basura al rival.",
     "dificultad": 2,
-    "tecnologias": ["canvas", "localstorage"],
+    "tecnologias": ["canvas", "localstorage", "websocket"],
     "estado": "jugable",
     "ruta": "/games/cascada/"
   },
