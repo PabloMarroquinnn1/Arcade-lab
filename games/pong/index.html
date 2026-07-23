@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a14">
+  <title>NEON PONG | Arcade Lab</title>
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="hud-left">
+        <a href="/" class="badge back-link">&#8592; Arcade</a>
+        <span id="logo">NEON<em>PONG</em></span>
+      </div>
+      <div class="hud-center">
+        <span id="role-badge" class="badge">Conectando...</span>
+      </div>
+      <div class="hud-right">
+        <span id="ping" class="ping"><span id="ping-dot" class="dot"></span><span id="ping-value">-- ms</span></span>
+      </div>
+    </header>
+
+    <main id="stage">
+      <canvas id="gameCanvas" width="800" height="500"></canvas>
+    </main>
+
+    <footer id="controls">
+      <span class="desktop-only">P1: <kbd>W</kbd><kbd>S</kbd></span>
+      <span class="desktop-only">P2: <kbd>&#8593;</kbd><kbd>&#8595;</kbd></span>
+      <span class="touch-only">Desliza el dedo para mover tu paleta</span>
+      <span id="spectators"></span>
+    </footer>
+  </div>
+
+  <div id="rotate-hint">&#128241;&#8594; Gira tu celular para jugar mejor</div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js?v=1"></script>
+</body>
+</html>
