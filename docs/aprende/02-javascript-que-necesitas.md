@@ -58,6 +58,15 @@ app.get('/api/juegos', (req, res) => {
 });
 ```
 
+Y en `games/snake/server.js`, exactamente el mismo patrón pero para un evento de WebSocket en vez
+de una petición HTTP:
+
+```js
+socket.on('setDirection', (data) => {
+  // esta función se ejecuta cada vez que ESE jugador manda un cambio de direccion
+});
+```
+
 ### Funciones que arman otras cosas
 
 En `hub/app.js`, `crearTarjeta(juego)` es una función que recibe un objeto `juego` y devuelve un
@@ -88,6 +97,13 @@ Dos atajos que vas a ver seguido en el código de este repo:
 ```js
 const { nombre, puntos } = jugador; // nombre = 'p1', puntos = 0
 const [primero] = juegos;           // primero = 'pong'
+```
+
+Ejemplo real, de `games/snake/duo.js`, sacando 4 valores del estado que manda el servidor en cada
+frame:
+
+```js
+const { p1, p2, food, status } = latestState;
 ```
 
 **Spread (`...`)** — copiar todas las propiedades de un objeto (o valores de un array) dentro de

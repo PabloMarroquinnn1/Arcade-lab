@@ -20,6 +20,7 @@ Orden sugerido (cada uno da por hecho el anterior):
 11. [11 – Arquitectura cliente-servidor de este arcade](11-arquitectura-cliente-servidor.md)
 12. [12 – Docker y despliegue](12-docker-y-despliegue.md)
 13. [13 – Gitflow en este repo](13-gitflow-en-este-repo.md)
+14. [14 – La lógica de los juegos en tiempo real (Pong y Snake)](14-logica-de-los-juegos-en-tiempo-real.md)
 
 No hace falta leerlos todos de una sentada. La idea es: cuando vayas a construir un juego nuevo y
 te trabes con un concepto, vienes aquí, lo lees, y vuelves al código. Todos tienen ejemplos que

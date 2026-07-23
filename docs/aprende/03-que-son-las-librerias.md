@@ -10,25 +10,34 @@ En `package.json`:
 
 ```json
 "dependencies": {
-  "express": "^4.21.2"
+  "express": "^4.21.2",
+  "socket.io": "^4.8.3"
 }
 ```
 
-Eso declara que este proyecto **depende** de la librería `express`, versión 4.21.x o compatible.
-Cuando corres `npm install`, npm descarga esa librería (y sus propias dependencias) a la carpeta
-`node_modules/` — por eso `node_modules/` está en `.gitignore`: no se sube al repo, se regenera con
-`npm install` en cualquier máquina.
+Eso declara que este proyecto **depende** de dos librerías: `express` (versión 4.21.x o
+compatible) y `socket.io` (4.8.x). Cuando corres `npm install`, npm descarga ambas (y sus propias
+dependencias) a la carpeta `node_modules/` — por eso `node_modules/` está en `.gitignore`: no se
+sube al repo, se regenera con `npm install` en cualquier máquina.
 
-En `server.js` la usamos así:
+En `server.js` las usamos así:
 
 ```js
 const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+
 const app = express();
+const httpServer = http.createServer(app);
+const io = new Server(httpServer);
 ```
 
 `require('express')` carga la librería. `express()` crea una aplicación web lista para recibir
 peticiones — sin escribir vos mismo un servidor HTTP desde cero (entender qué pidió el navegador,
-manejar cada conexión, etc.), que es un problema grande y ya resuelto.
+manejar cada conexión, etc.), que es un problema grande y ya resuelto. `socket.io` hace lo mismo
+pero para WebSockets: reconexión automática, un sistema de eventos con nombre, y el concepto de
+*namespace* que usan Pong y Snake para no pisarse entre sí — ver
+[14 – La lógica de los juegos en tiempo real](14-logica-de-los-juegos-en-tiempo-real.md).
 
 ## npm, en corto
 
@@ -41,12 +50,10 @@ npm install               # instala TODO lo que ya está en package.json (ej. al
 npm start                 # corre el script "start" definido en package.json
 ```
 
-## Cuándo vas a instalar librerías nuevas en este proyecto
+## Próximas librerías que vamos a instalar en este proyecto
 
-- Cuando migremos Pong: `socket.io`, para WebSockets con reconexión automática y sistema de
-  eventos, en vez de escribir el protocolo de WebSocket a mano.
-- Más adelante, si agregamos CORS entre orígenes distintos: la librería `cors` (ver
-  [06 – Qué es CORS](06-que-es-cors.md)).
+- Si algún día agregamos CORS entre orígenes distintos: la librería `cors` (ver
+  [06 – Qué es CORS](06-que-es-cors.md)) — todavía no hace falta, hub y juegos comparten origin.
 - Cuando lleguemos a `Mazmorra` con base de datos: algo como `better-sqlite3` o un cliente de
   Postgres.
 

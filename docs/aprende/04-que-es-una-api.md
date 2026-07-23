@@ -12,8 +12,9 @@ menú, y el mesero te trae el resultado. No te importa cómo está montada la co
   navegador te da, no las escribes tú.
 - **API HTTP propia**: el `server.js` de este repo expone `GET /api/juegos`. Es tu backend
   ofreciendo datos a tu frontend.
-- **API en tiempo real**: cuando migremos Pong, el "menú" de operaciones no será HTTP sino eventos
-  de WebSocket (`movePaddle`, `gameState`...) — ver [10](10-websockets-vs-http.md).
+- **API en tiempo real**: Pong y Snake (modo 2 jugadores) tienen su propio "menú", pero de eventos
+  de WebSocket en vez de URLs — `movePaddle`/`gameState` en Pong, `setDirection`/`gameState` en
+  Snake. Ver [10](10-websockets-vs-http.md) y [14](14-logica-de-los-juegos-en-tiempo-real.md).
 
 ## Ejemplo real de este repo
 

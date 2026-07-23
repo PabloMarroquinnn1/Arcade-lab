@@ -8,9 +8,11 @@
 - **Servidor**: el único `server.js`, corriendo en Node dentro de un contenedor Docker en tu HP con
   Ubuntu Server. Es la autoridad — decide qué es verdad (quién ganó, dónde está la pelota).
 
-Esto ya lo hiciste bien en el Pong original: el servidor calcula la física de la pelota y las
-paletas; el cliente solo manda "quiero moverme para arriba" y dibuja lo que el servidor le dice. Si
-el cliente pudiera decidir "gané", cualquiera podría hacer trampa editando el JS del navegador.
+Así están armados Pong y Snake (modo 2 jugadores): el servidor calcula la física de la pelota (o
+decide si una víbora chocó), y el cliente solo manda "quiero moverme para arriba" y dibuja lo que
+el servidor le dice. Si el cliente pudiera decidir "gané", cualquiera podría hacer trampa editando
+el JS del navegador. El patrón exacto que comparten los dos juegos está detallado en
+[14 – La lógica de los juegos en tiempo real](14-logica-de-los-juegos-en-tiempo-real.md).
 
 ## Cómo se sirve todo en este repo
 
@@ -26,10 +28,13 @@ Todo en un solo contenedor Docker (ver [12](12-docker-y-despliegue.md)) porque t
 
 ## Juegos estáticos vs juegos con servidor
 
-| Tipo        | Necesita `server.js` para jugarse   | Ejemplo         |
+Ojo: esto no es siempre "un juego = una categoría". Snake es el ejemplo perfecto de que **el mismo
+juego** puede tener un modo de cada tipo:
+
+| Tipo        | Necesita `server.js` para jugarse   | Ejemplo real en este repo |
 |-------------|--------------------------------------|-----------------|
-| Estático    | No (solo para servir los archivos)   | Snake, 2048     |
-| Tiempo real | Sí, con estado en memoria + Socket.IO | Pong, cualquier 1v1 |
+| Estático    | No (solo para servir los archivos)   | Snake modo solo |
+| Tiempo real | Sí, con estado en memoria + Socket.IO | Pong, Snake modo 2 jugadores |
 
 `games.json` (en `hub/`) es la lista que alimenta el hub — cada juego que agregues se registra ahí
 con su nombre, ruta y una descripción corta. El hub la lee vía `GET /api/juegos` (ver
