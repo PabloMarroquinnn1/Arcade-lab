@@ -1,8 +1,8 @@
-# 14 – La lógica de los juegos en tiempo real (Pong y Snake)
+# 14 – La lógica de los juegos en tiempo real (Pong, Snake y Cascada)
 
-Con Pong y Snake (modo 2 jugadores) ya construidos, acá está el patrón que **los dos comparten** —
-para que cuando armes el próximo juego en tiempo real (Cascada, Blastzone, etc.) sepas qué copiar
-tal cual y qué es específico de cada juego.
+Con Pong, Snake (modo 2 jugadores) y Cascada (modo versus) ya construidos, acá está el patrón que
+**los tres comparten** — para que cuando armes el próximo juego en tiempo real (Blastzone, Trivia,
+etc.) sepas qué copiar tal cual y qué es específico de cada juego.
 
 ## El patrón, en 5 piezas
 
@@ -20,6 +20,7 @@ tal cual y qué es específico de cada juego.
 ```js
 require('./games/pong/server')(io);
 require('./games/snake/server')(io);
+require('./games/cascada/server')(io);
 ```
 
 Y cada uno se cuelga de su propio namespace en vez del namespace por defecto:
@@ -50,13 +51,15 @@ Ninguno de los dos juegos deja que el cliente decida nada importante:
   de la pelota, los rebotes, y quién ganó.
 - En Snake, el cliente manda "ahora voy para la izquierda" (`setDirection`); el servidor decide si
   esa víbora chocó contra la pared, contra sí misma o contra la otra.
+- En Cascada, el cliente manda "rotar" o "caída rápida" (`action`); el servidor decide si esa pieza
+  entra ahí, si se completó una línea, y hasta le manda basura al tablero del rival.
 
 Si el cliente pudiera decidir el resultado, cualquiera podría hacer trampa editando el JS del
 navegador. Ver [11](11-arquitectura-cliente-servidor.md).
 
 ## 3. Loop a intervalo fijo + `volatile.emit`
 
-Los dos juegos corren un `setInterval` que avanza el juego y manda el estado completo — pero a
+Los tres juegos corren un `setInterval` que avanza el juego y manda el estado completo — pero a
 velocidades distintas, según lo que necesita cada uno:
 
 ```js
@@ -65,13 +68,20 @@ gameLoopInterval = setInterval(gameLoop, TICK_RATE); // TICK_RATE = 1000 / 60
 
 // Snake: cada 120ms — es un juego de grilla, no hace falta ir mas rapido que eso
 gameLoopInterval = setInterval(gameLoop, TICK_MS); // TICK_MS = 120
+
+// Cascada versus: cada 500ms, y a proposito FIJA (a diferencia del modo
+// solo, que va mas rapido con cada nivel) — en un 1v1 conviene que a los
+// dos les caigan las piezas igual de rapido, si no el mas lento arranca en
+// desventaja
+gameLoopInterval = setInterval(gameLoop, TICK_MS); // TICK_MS = 500
 ```
 
-Ambos mandan el estado con `volatile.emit` en vez de `emit` normal:
+Los tres mandan el estado con `volatile.emit` en vez de `emit` normal:
 
 ```js
 pong.volatile.emit('gameState', { /* ... */ });
 snake.volatile.emit('gameState', { /* ... */ });
+cascada.volatile.emit('gameState', { /* ... */ });
 ```
 
 `volatile` le dice a Socket.IO: "si el cliente está momentáneamente desconectado o atrasado, no
@@ -100,20 +110,21 @@ fue.
 
 ## 5. El cliente: mandar inputs, dibujar lo que llega
 
-Acá es donde Pong y Snake se diferencian más, y por una buena razón.
+Acá es donde Pong se diferencia de Snake y Cascada, y por una buena razón.
 
 **Pong** interpola: guarda los últimos snapshots del servidor y dibuja ~80ms en el pasado,
 mezclando entre dos snapshots (`games/pong/client.js`, función `getRenderState`). Hace falta porque
 la pelota se mueve de forma continua a 60fps — sin interpolar, cualquier variación en la llegada de
 paquetes por red se ve como tirones.
 
-**Snake** no interpola: dibuja directo el último estado que llegó (`games/snake/duo.js`). No hace
-falta, porque el movimiento ya es "a los saltos" por diseño — la víbora se mueve una celda entera
-cada 120ms, así que no hay nada continuo que suavizar.
+**Snake y Cascada** no interpolan: dibujan directo el último estado que llegó
+(`games/snake/duo.js`, `games/cascada/duo.js`). No hace falta, porque el movimiento ya es "a los
+saltos" por diseño — la víbora se mueve una celda entera cada 120ms, las piezas de Cascada caen una
+fila cada 500ms, así que no hay nada continuo que suavizar.
 
 Regla práctica: si tu juego nuevo tiene movimiento continuo (algo tipo `Devora`), vas a necesitar
-interpolar como Pong. Si es a grilla o por turnos (`Cascada`, `Hundir la Flota`, `Turno`), con
-dibujar el último estado alcanza, como Snake.
+interpolar como Pong. Si es a grilla o por turnos (`Hundir la Flota`, `Turno`), con dibujar el
+último estado alcanza, como Snake y Cascada.
 
 ## Lo que es específico de cada juego (no es parte del patrón)
 
@@ -121,11 +132,14 @@ dibujar el último estado alcanza, como Snake.
 - **Snake**: el crecimiento al comer, y la detección de choque usando `futureBody` — el cuerpo
   "tal como va a quedar" después de moverse (la cola se libera esa misma vuelta, salvo que la
   víbora esté por crecer).
+- **Cascada**: la rotación de piezas (matriz 4x4 rotada, sin *wall-kick* — si al rotar no entra,
+  simplemente no rota), y la mecánica de mandarle líneas de "basura" al rival cuando completás
+  varias a la vez (`addGarbage` en `games/cascada/server.js`).
 
 ## Cuándo este patrón NO aplica
 
-El modo solo de Snake (`games/snake/solo.js`) no sigue nada de esto — no hay namespace, no hay
-servidor, no hay roles. Es un `setInterval` corriendo directo en el navegador, con todo el estado
-del juego viviendo ahí mismo. Es la comparación perfecta para la regla de
-[10 – WebSockets vs HTTP](10-websockets-vs-http.md): un juego que un jugador solo puede jugar sin
-sincronizar nada con nadie no necesita servidor en absoluto.
+Los modos solo de Snake y Cascada (`games/snake/solo.js`, `games/cascada/solo.js`) no siguen nada
+de esto — no hay namespace, no hay servidor, no hay roles. Es un `setInterval` corriendo directo en
+el navegador, con todo el estado del juego viviendo ahí mismo. Son la comparación perfecta para la
+regla de [10 – WebSockets vs HTTP](10-websockets-vs-http.md): un juego que un jugador solo puede
+jugar sin sincronizar nada con nadie no necesita servidor en absoluto.
