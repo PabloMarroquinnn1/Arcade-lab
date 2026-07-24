@@ -28,12 +28,12 @@
   },
   {
     "id": "buscaminas-coop",
-    "nombre": "Buscaminas Coop",
-    "descripcion": "El buscaminas clasico pero cooperativo: varios jugadores destapan el mismo tablero y ven los cursores de los demas en vivo.",
+    "nombre": "Buscaminas",
+    "descripcion": "El clasico de siempre. Modo solo (guarda tu mejor tiempo en este navegador). Modo cooperativo en camino.",
     "dificultad": 3,
-    "tecnologias": ["websocket", "dom"],
-    "estado": "proximamente",
-    "ruta": null
+    "tecnologias": ["dom", "localstorage"],
+    "estado": "jugable",
+    "ruta": "/games/buscaminas/"
   },
   {
     "id": "blastzone",
