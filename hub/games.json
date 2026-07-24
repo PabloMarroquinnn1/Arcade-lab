@@ -29,9 +29,9 @@
   {
     "id": "buscaminas-coop",
     "nombre": "Buscaminas",
-    "descripcion": "El clasico de siempre. Modo solo (guarda tu mejor tiempo en este navegador). Modo cooperativo en camino.",
+    "descripcion": "El clasico de siempre. Modo solo, o cooperativo: todos comparten el mismo tablero y ven el cursor de los demas en vivo.",
     "dificultad": 3,
-    "tecnologias": ["dom", "localstorage"],
+    "tecnologias": ["dom", "localstorage", "websocket"],
     "estado": "jugable",
     "ruta": "/games/buscaminas/"
   },
