@@ -36,7 +36,8 @@ const io = new Server(httpServer);
 peticiones — sin escribir vos mismo un servidor HTTP desde cero (entender qué pidió el navegador,
 manejar cada conexión, etc.), que es un problema grande y ya resuelto. `socket.io` hace lo mismo
 pero para WebSockets: reconexión automática, un sistema de eventos con nombre, y el concepto de
-*namespace* que usan Pong y Snake para no pisarse entre sí — ver
+*namespace* que usan Pong y Snake para no pisarse entre sí — qué es exactamente, en
+[10 – WebSockets vs HTTP](10-websockets-vs-http.md), y cómo se usa en todos los juegos, en
 [14 – La lógica de los juegos en tiempo real](14-logica-de-los-juegos-en-tiempo-real.md).
 
 ## npm, en corto

@@ -20,6 +20,9 @@ con el tiempo (acá, la mecha de las bombas).
 
 ## 1. Un namespace por juego
 
+(Si "namespace" te suena a chino, primero pasá por
+[10 – WebSockets vs HTTP](10-websockets-vs-http.md#qué-es-un-namespace), que lo explica desde cero.)
+
 `server.js` (raíz) monta cada juego por separado:
 
 ```js
