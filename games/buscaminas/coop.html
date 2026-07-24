@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscaminas Cooperativo | Arcade Lab</title>
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="hud-left">
+        <a href="/" class="badge back-link">&#8592; Arcade</a>
+        <a href="index.html" class="badge back-link">Cambiar modo</a>
+      </div>
+      <div class="hud-center">
+        <span class="score-tag mines">&#128163; <span id="minesLeft">0</span></span>
+      </div>
+      <div class="hud-right">
+        <span class="score-tag players">&#128101; <span id="players">0</span> conectados</span>
+      </div>
+    </header>
+
+    <main id="stage">
+      <div id="boardWrap" class="board-wrap">
+        <div id="board" class="board"></div>
+      </div>
+    </main>
+
+    <footer id="controls">
+      <span>Clic: destapar &middot; Clic derecho: bandera &middot; Se juega entre todos los conectados</span>
+      <button id="flagModeBtn" class="flag-mode-btn" type="button">&#128681; Modo bandera (para táctil)</button>
+    </footer>
+  </div>
+
+  <div id="overlay" class="overlay-message">
+    <div class="overlay-card">
+      <div id="overlayTitle" class="overlay-title"></div>
+      <div id="overlaySub" class="overlay-sub"></div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="coop.js?v=1"></script>
+</body>
+</html>
