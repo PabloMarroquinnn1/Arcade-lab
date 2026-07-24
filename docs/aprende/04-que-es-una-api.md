@@ -35,9 +35,9 @@ Pruébalo corriendo el server y visitando `http://localhost:3000/api/juegos` en 
 
 ## Otro ejemplo de Web API: Pointer Events (mouse, dedo y lápiz, unificados)
 
-Cuando el modo multijugador de `Dibuja y Adivina` necesite que alguien dibuje en el canvas, va a
-usar la **Pointer Events API** — otra API que te da el navegador, como `fetch` o `localStorage`,
-pero para saber "dónde tocaron y con qué".
+El modo multijugador (salas) de `Dibuja y Adivina` usa la **Pointer Events API** para que quien
+dibuja pueda hacerlo con mouse, dedo o lápiz — otra API que te da el navegador, como `fetch` o
+`localStorage`, pero para saber "dónde tocaron y con qué".
 
 Antes de que existiera, había que escuchar eventos separados para cada dispositivo: `mousedown` /
 `mousemove` / `mouseup` para mouse, `touchstart` / `touchmove` / `touchend` para el dedo, y el
@@ -60,5 +60,15 @@ el celular, y con el lápiz en una tablet — sin escribir una rama de código d
 dispositivo. `e.pressure` es lo que, a futuro, podría usarse para que el trazo salga más grueso
 cuanto más fuerte apretás con un lápiz de verdad.
 
-Esto todavía no está en el código — llega con el modo multijugador de `Dibuja y Adivina`. Cuando
-esté, esta sección va a apuntar al archivo real, como el resto de los ejemplos de esta carpeta.
+Ejemplo real, de `games/dibuja-y-adivina/salas.js`:
+
+```js
+canvas.addEventListener('pointerdown', (e) => {
+  drawingLocally = true;
+  canvas.setPointerCapture(e.pointerId); // sigue recibiendo eventos aunque el puntero salga del canvas
+  const { x, y } = toCanvasXY(e);
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  socket.emit('trazoInicio', { x, y }); // le avisa al servidor, que se lo retransmite a los demas
+});
+```

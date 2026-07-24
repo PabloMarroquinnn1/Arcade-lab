@@ -34,6 +34,7 @@ require('./games/cascada/server')(io);
 require('./games/buscaminas/server')(io);
 require('./games/blastzone/server')(io);
 require('./games/trivia/server')(io);
+require('./games/dibuja-y-adivina/server')(io);
 
 httpServer.listen(PORT, '0.0.0.0', () => {
   console.log(`Arcade Lab corriendo en http://localhost:${PORT}`);

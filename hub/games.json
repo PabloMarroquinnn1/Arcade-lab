@@ -56,9 +56,9 @@
   {
     "id": "dibuja-y-adivina",
     "nombre": "Dibuja y Adivina",
-    "descripcion": "La compu dibuja de a poco, adivina que es contra el reloj. Modo con jugador dibujando en vivo en camino.",
+    "descripcion": "Modo solo (adivina el dibujo contra el reloj), o en salas: alguien dibuja de verdad por turnos, el resto adivina por chat.",
     "dificultad": 6,
-    "tecnologias": ["canvas", "localstorage"],
+    "tecnologias": ["canvas", "localstorage", "websocket", "salas"],
     "estado": "jugable",
     "ruta": "/games/dibuja-y-adivina/"
   },
