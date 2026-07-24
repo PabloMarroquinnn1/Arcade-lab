@@ -64,6 +64,15 @@ function showRoomBadge(codigo) {
   roomCodeEl.textContent = codigo;
 }
 
+// El nombre lo elige cada jugador — nunca hay que insertarlo tal cual en
+// HTML, o alguien podria poner algo como "<img src=x onerror=...>" como
+// nombre y ejecutar codigo en la pantalla de los demas (XSS).
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 // ---------- Pantalla: entrada (crear o unirse) ----------
 
 function renderEntrada() {
@@ -114,7 +123,7 @@ function renderLobby() {
       <p class="final-sub">Compartí este código para que se unan</p>
       <ul class="players-list">
         ${currentRoom.jugadores
-          .map((j) => `<li>${j.nombre}${j.id === currentRoom.hostId ? ' (anfitrión)' : ''}${j.id === myId ? ' — vos' : ''}</li>`)
+          .map((j) => `<li>${escapeHtml(j.nombre)}${j.id === currentRoom.hostId ? ' (anfitrión)' : ''}${j.id === myId ? ' — vos' : ''}</li>`)
           .join('')}
       </ul>
       ${
@@ -211,7 +220,7 @@ function renderRankingList(ranking) {
         .map(
           (j, i) => `
         <li class="ranking-item${j.id === myId ? ' me' : ''}">
-          <span><span class="ranking-pos">#${i + 1}</span>${j.nombre}</span>
+          <span><span class="ranking-pos">#${i + 1}</span>${escapeHtml(j.nombre)}</span>
           <span>${j.puntaje} pts</span>
         </li>`
         )
