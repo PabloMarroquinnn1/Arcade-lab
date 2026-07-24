@@ -47,11 +47,11 @@
   {
     "id": "trivia",
     "nombre": "Trivia",
-    "descripcion": "Salas con codigo para unirse, temporizador sincronizado y ranking en vivo.",
+    "descripcion": "8 preguntas contra el reloj. Modo solo (guarda tu mejor puntaje). Salas con codigo en camino.",
     "dificultad": 5,
-    "tecnologias": ["websocket", "salas"],
-    "estado": "proximamente",
-    "ruta": null
+    "tecnologias": ["localstorage"],
+    "estado": "jugable",
+    "ruta": "/games/trivia/"
   },
   {
     "id": "dibuja-y-adivina",
