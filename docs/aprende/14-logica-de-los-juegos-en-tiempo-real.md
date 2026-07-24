@@ -1,11 +1,11 @@
-# 14 – La lógica de los juegos en tiempo real (Pong, Snake, Cascada, Buscaminas y Blastzone)
+# 14 – La lógica de los juegos en tiempo real (Pong, Snake, Cascada, Buscaminas, Blastzone y Trivia)
 
-Con estos cinco juegos ya construidos, acá está el patrón que **comparten** — para que cuando
-armes el próximo juego en tiempo real (Trivia, Turno, etc.) sepas qué copiar tal cual y qué es
-específico de cada juego. Buscaminas rompe dos de las reglas a propósito — esas excepciones están
-marcadas más abajo, léelas también. Blastzone, en cambio, es el que más se parece al patrón base:
-sirve como buen punto de partida si tu próximo juego es competitivo 1v1 con algo que avanza solo
-con el tiempo (acá, la mecha de las bombas).
+Con estos seis juegos ya construidos, acá está el patrón que **comparten** — para que cuando armes
+el próximo juego en tiempo real (`Turno`, etc.) sepas qué copiar tal cual y qué es específico de
+cada juego. Buscaminas rompe dos de las reglas a propósito, y Trivia agrega una pieza nueva (salas)
+— esas excepciones están marcadas más abajo, léelas también. Blastzone es el que más se parece al
+patrón base: sirve como buen punto de partida si tu próximo juego es competitivo 1v1 con algo que
+avanza solo con el tiempo (acá, la mecha de las bombas).
 
 ## El patrón, en 5 piezas
 
@@ -208,9 +208,70 @@ socket.on('reveal', (data) => {
 ```
 
 Regla práctica: si en tu juego "no pasa nada" cuando nadie toca nada, no necesita loop — que sea en
-tiempo real (varias personas viendo lo mismo en vivo) no significa que tenga que tickear. `Trivia`
-y `Turno` probablemente van a ser así también: reaccionan a que alguien responda o juegue una
-carta, no a que pase el tiempo.
+tiempo real (varias personas viendo lo mismo en vivo) no significa que tenga que tickear. `Turno`
+probablemente va a ser así también: reacciona a que alguien juegue una carta, no a que pase el
+tiempo.
+
+`Trivia`, en cambio, sí tiene algo que avanza solo — el tiempo para responder — pero **tampoco**
+usa `setInterval`. Usa algo más simple todavía: ver la sección 8.
+
+## 7. Salas: varias partidas independientes en el mismo namespace
+
+Hasta Buscaminas, cada juego tenía **una sola partida global** por namespace — todo el que se
+conecta a `/pong` juega la misma partida de Pong. Trivia rompe eso a propósito: dos grupos de
+amigos jugando Trivia al mismo tiempo no deberían ver las preguntas del otro grupo, así que
+`/trivia` necesita poder tener **muchas partidas independientes a la vez**, cada una identificada
+por un código.
+
+Para esto, Socket.IO tiene **salas** (*rooms*) — no confundir con los namespaces (ver
+[10](10-websockets-vs-http.md#qué-es-un-namespace)): el namespace es fijo, uno por juego, decidido
+por vos en el código. La sala es dinámica, se crea en el momento, y la arma quien juega:
+
+```js
+// games/trivia/server.js
+socket.on('crearSala', (data) => {
+  const room = createRoom(socket.id, data.nombre); // genera un codigo random
+  socket.join(room.code); // este socket entra a esa sala
+  socket.emit('salaCreada', { codigo: room.code });
+});
+```
+
+Y para mandarle algo **solo** a los que están en esa sala (no a todo `/trivia`), en vez de
+`trivia.emit(...)` se usa `trivia.to(codigo).emit(...)`:
+
+```js
+trivia.to(room.code).emit('pregunta', { pregunta: '...', opciones: [...] });
+```
+
+Si te olvidás el `.to(room.code)` y hacés `trivia.emit(...)` a secas, la pregunta le llega a
+**todos** los conectados a Trivia en ese momento, mezclando todas las salas — es el error más fácil
+de cometer acá, y por eso vale la pena probarlo con dos salas abiertas a la vez antes de dar por
+terminado un juego con salas.
+
+## 8. `setTimeout` encadenado, cuando ya sabés cuándo pasa lo próximo
+
+Blastzone usa `setInterval` porque en cualquier momento puede haber una bomba a punto de explotar,
+y hay que estar revisando todo el tiempo. Trivia es distinto: en un momento dado, **hay exactamente
+una cosa por pasar** — se acaba el tiempo de la pregunta actual, o se acaba el tiempo de mostrar los
+resultados — y sabés exactamente cuándo. Ahí no hace falta revisar cada tanto: alcanza con
+programar un solo `setTimeout` para ese momento exacto, y que ese mismo `setTimeout` programe el
+siguiente:
+
+```js
+// games/trivia/server.js, simplificado
+function startQuestion(room) {
+  // ...manda la pregunta...
+  room.timer = setTimeout(() => showResults(room), TIME_PER_QUESTION_MS);
+}
+
+function showResults(room) {
+  // ...manda los resultados...
+  room.timer = setTimeout(() => startQuestion(room), RESULTS_DURATION_MS);
+}
+```
+
+Cada sala tiene su propio `room.timer` — con salas, además, no hay UN loop global como en los
+juegos anteriores: **cada partida corre su propia cadena de tiempos**, independiente de las demás.
 
 ## Lo que es específico de cada juego (no es parte del patrón)
 
@@ -227,11 +288,15 @@ carta, no a que pase el tiempo.
 - **Blastzone**: la reacción en cadena entre bombas (si la explosión de una alcanza a otra, esa
   también explota, aunque le quedara mecha), el bloque destructible que esconde la salida en el
   modo solo, y el `MOVE_COOLDOWN_MS` que valida la velocidad de movimiento en el servidor.
+- **Trivia**: las salas con código (ver la sección 7), el puntaje con bonus por velocidad calculado
+  en el servidor con la hora en la que llegó la respuesta (no confiando en lo que diga el cliente
+  sobre cuánto tardó), y que se ignora cualquier respuesta que no sea la primera de cada jugador
+  por pregunta.
 
 ## Cuándo este patrón NO aplica
 
-Los modos solo de Snake, Cascada, Buscaminas y Blastzone (`solo.js` en cada carpeta) no siguen nada
-de esto — no hay namespace, no hay servidor, no hay roles. Todo el estado del juego vive directo en
-el navegador. Son la comparación perfecta para la regla de
+Los modos solo de Snake, Cascada, Buscaminas, Blastzone y Trivia (`solo.js` en cada carpeta) no
+siguen nada de esto — no hay namespace, no hay servidor, no hay roles. Todo el estado del juego
+vive directo en el navegador. Son la comparación perfecta para la regla de
 [10 – WebSockets vs HTTP](10-websockets-vs-http.md): un juego que un jugador solo puede jugar sin
 sincronizar nada con nadie no necesita servidor en absoluto.
