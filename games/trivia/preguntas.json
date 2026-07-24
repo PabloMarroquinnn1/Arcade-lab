@@ -1,0 +1,117 @@
+[
+  {
+    "pregunta": "¿Cuál es el planeta más grande del sistema solar?",
+    "opciones": ["Tierra", "Júpiter", "Saturno", "Neptuno"],
+    "correcta": 1
+  },
+  {
+    "pregunta": "¿En qué año llegó el ser humano a la Luna por primera vez?",
+    "opciones": ["1965", "1969", "1972", "1958"],
+    "correcta": 1
+  },
+  {
+    "pregunta": "¿Cuál es el idioma más hablado del mundo como lengua materna?",
+    "opciones": ["Inglés", "Español", "Mandarín", "Hindi"],
+    "correcta": 2
+  },
+  {
+    "pregunta": "¿Qué gas es el más abundante en la atmósfera terrestre?",
+    "opciones": ["Oxígeno", "Dióxido de carbono", "Nitrógeno", "Hidrógeno"],
+    "correcta": 2
+  },
+  {
+    "pregunta": "¿Cuál es el río más largo del mundo?",
+    "opciones": ["Nilo", "Amazonas", "Misisipi", "Yangtsé"],
+    "correcta": 1
+  },
+  {
+    "pregunta": "¿Quién pintó la Mona Lisa?",
+    "opciones": ["Miguel Ángel", "Rafael", "Leonardo da Vinci", "Donatello"],
+    "correcta": 2
+  },
+  {
+    "pregunta": "¿Cuántos huesos tiene el cuerpo humano adulto, aproximadamente?",
+    "opciones": ["156", "206", "256", "306"],
+    "correcta": 1
+  },
+  {
+    "pregunta": "¿Cuál es el país con más volcanes activos del mundo?",
+    "opciones": ["Japón", "Estados Unidos", "Indonesia", "Chile"],
+    "correcta": 2
+  },
+  {
+    "pregunta": "¿Qué lenguaje de programación se usa para el backend de este arcade?",
+    "opciones": ["Python", "JavaScript", "Ruby", "Java"],
+    "correcta": 1
+  },
+  {
+    "pregunta": "¿Qué significa HTTP?",
+    "opciones": [
+      "HyperText Transfer Protocol",
+      "High Transfer Text Protocol",
+      "HyperText Transmission Process",
+      "Home Tool Transfer Protocol"
+    ],
+    "correcta": 0
+  },
+  {
+    "pregunta": "¿Cuál de estos NO es un lenguaje de programación?",
+    "opciones": ["Python", "HTML", "Java", "C++"],
+    "correcta": 1
+  },
+  {
+    "pregunta": "¿Qué órgano del cuerpo humano produce la insulina?",
+    "opciones": ["Hígado", "Páncreas", "Riñón", "Bazo"],
+    "correcta": 1
+  },
+  {
+    "pregunta": "¿Cuál es el océano más grande del mundo?",
+    "opciones": ["Atlántico", "Índico", "Pacífico", "Ártico"],
+    "correcta": 2
+  },
+  {
+    "pregunta": "¿Quién escribió \"Cien años de soledad\"?",
+    "opciones": ["Mario Vargas Llosa", "Gabriel García Márquez", "Pablo Neruda", "Jorge Luis Borges"],
+    "correcta": 1
+  },
+  {
+    "pregunta": "¿Cuántos jugadores tiene un equipo de fútbol en cancha (sin contar suplentes)?",
+    "opciones": ["9", "10", "11", "12"],
+    "correcta": 2
+  },
+  {
+    "pregunta": "¿Qué elemento químico tiene el símbolo \"Fe\"?",
+    "opciones": ["Flúor", "Fósforo", "Hierro", "Francio"],
+    "correcta": 2
+  },
+  {
+    "pregunta": "¿Cuál es el desierto más grande del mundo?",
+    "opciones": ["Sahara", "Gobi", "Antártida", "Atacama"],
+    "correcta": 2
+  },
+  {
+    "pregunta": "¿En qué continente está Guatemala?",
+    "opciones": ["Sudamérica", "Centroamérica", "El Caribe", "Norteamérica"],
+    "correcta": 1
+  },
+  {
+    "pregunta": "¿Qué formato de datos usa la API de este arcade para responder /api/juegos?",
+    "opciones": ["XML", "CSV", "JSON", "YAML"],
+    "correcta": 2
+  },
+  {
+    "pregunta": "¿Cuál es la velocidad aproximada de la luz en el vacío?",
+    "opciones": ["300.000 km/s", "150.000 km/s", "1.000.000 km/s", "30.000 km/s"],
+    "correcta": 0
+  },
+  {
+    "pregunta": "¿Qué animal es el más grande del mundo?",
+    "opciones": ["Elefante africano", "Tiburón ballena", "Ballena azul", "Cachalote"],
+    "correcta": 2
+  },
+  {
+    "pregunta": "¿Cuántas cartas tiene una baraja española estándar (sin comodines)?",
+    "opciones": ["40", "48", "52", "36"],
+    "correcta": 0
+  }
+]

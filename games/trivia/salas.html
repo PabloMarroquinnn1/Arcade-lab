@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trivia Salas | Arcade Lab</title>
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="hud-left">
+        <a href="/" class="badge back-link">&#8592; Arcade</a>
+        <a href="index.html" class="badge back-link">Cambiar modo</a>
+      </div>
+      <div class="hud-right">
+        <span id="roomBadge" class="score-tag room" style="display:none">Sala <span id="roomCode">----</span></span>
+      </div>
+    </header>
+
+    <main id="stage">
+      <div id="screenRoot" class="quiz-card"></div>
+    </main>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="salas.js?v=1"></script>
+</body>
+</html>

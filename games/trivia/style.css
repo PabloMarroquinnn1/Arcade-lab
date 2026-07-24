@@ -1,0 +1,359 @@
+:root {
+  --bg: #0a0a14;
+  --panel: rgba(255, 255, 255, 0.04);
+  --neon-green: #00ff88;
+  --neon-pink: #ff4466;
+  --neon-yellow: #ffcc00;
+  --text-dim: #8a8aa0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(0, 255, 136, 0.07), transparent 60%),
+    radial-gradient(1000px 500px at 50% 110%, rgba(255, 68, 102, 0.07), transparent 60%),
+    var(--bg);
+  color: #ffffff;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* ---------- Piezas compartidas: badge / link de volver ---------- */
+
+.badge {
+  font-size: 0.8rem;
+  color: var(--neon-yellow);
+  background: var(--panel);
+  border: 1px solid rgba(255, 204, 0, 0.35);
+  border-radius: 999px;
+  padding: 7px 14px;
+  white-space: nowrap;
+}
+
+.back-link {
+  text-decoration: none;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+/* ---------- Pantalla de juego ---------- */
+
+#app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+#hud {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  flex-wrap: wrap;
+}
+
+.hud-left, .hud-right, .hud-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.score-tag {
+  font-size: 0.8rem;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 7px 12px;
+  white-space: nowrap;
+}
+
+.score-tag.score { color: var(--neon-green); border-color: rgba(0, 255, 136, 0.4); }
+.score-tag.best { color: var(--neon-yellow); border-color: rgba(255, 204, 0, 0.4); }
+.score-tag.room { color: var(--neon-yellow); border-color: rgba(255, 204, 0, 0.4); }
+
+#stage {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.quiz-card {
+  width: 100%;
+  max-width: 560px;
+}
+
+.progress-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+.timer-bar-wrap {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.timer-bar {
+  height: 100%;
+  background: var(--neon-green);
+  border-radius: 999px;
+  transition: width 0.2s linear, background-color 0.2s linear;
+}
+
+.question-text {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  line-height: 1.4;
+}
+
+.options-grid {
+  display: grid;
+  gap: 10px;
+}
+
+@media (min-width: 480px) {
+  .options-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.option-btn {
+  font: inherit;
+  font-size: 0.9rem;
+  text-align: left;
+  color: #ffffff;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.option-btn:hover:not(:disabled) {
+  border-color: rgba(0, 255, 136, 0.5);
+}
+
+.option-btn:disabled {
+  cursor: default;
+}
+
+.option-btn.selected {
+  border-color: var(--neon-green);
+  background: rgba(0, 255, 136, 0.1);
+}
+
+.option-btn.correct {
+  border-color: var(--neon-green);
+  background: rgba(0, 255, 136, 0.2);
+  color: var(--neon-green);
+}
+
+.option-btn.incorrect {
+  border-color: var(--neon-pink);
+  background: rgba(255, 68, 102, 0.15);
+  color: var(--neon-pink);
+}
+
+.final-card, .lobby-card {
+  text-align: center;
+}
+
+.final-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--neon-green);
+  margin-bottom: 12px;
+}
+
+.final-score {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.final-sub {
+  color: var(--text-dim);
+  margin-bottom: 24px;
+}
+
+.primary-btn {
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0a0a14;
+  background: var(--neon-green);
+  border: none;
+  border-radius: 999px;
+  padding: 12px 24px;
+  cursor: pointer;
+}
+
+.primary-btn:hover {
+  filter: brightness(1.1);
+}
+
+/* ---------- Ranking en vivo (modo salas) ---------- */
+
+.ranking-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  text-align: left;
+}
+
+.ranking-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--panel);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ranking-item.me {
+  border-color: rgba(0, 255, 136, 0.5);
+}
+
+.ranking-pos {
+  color: var(--neon-yellow);
+  margin-right: 10px;
+}
+
+/* ---------- Sala: crear / unirse ---------- */
+
+.room-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.room-form input {
+  font: inherit;
+  font-size: 1rem;
+  text-align: center;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.room-form input:focus {
+  outline: none;
+  border-color: var(--neon-green);
+}
+
+.room-code-display {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 6px;
+  color: var(--neon-yellow);
+  margin: 16px 0;
+}
+
+.players-list {
+  list-style: none;
+  margin: 16px 0;
+  color: var(--text-dim);
+}
+
+.error-text {
+  color: var(--neon-pink);
+  font-size: 0.85rem;
+  min-height: 1.2em;
+}
+
+/* ---------- Pantalla de selección de modo (index.html) ---------- */
+
+.menu-body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.menu {
+  position: relative;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+
+.menu-back {
+  position: absolute;
+  top: -48px;
+  left: 0;
+}
+
+.menu-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--neon-green);
+  text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+  margin-bottom: 10px;
+}
+
+.menu-sub {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  margin-bottom: 32px;
+}
+
+.menu-options {
+  display: grid;
+  gap: 14px;
+}
+
+.menu-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  text-decoration: none;
+  padding: 18px 20px;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: border-color 0.15s ease;
+}
+
+.menu-card:hover {
+  border-color: rgba(0, 255, 136, 0.5);
+}
+
+.menu-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--neon-green);
+}
+
+.menu-card-desc {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
