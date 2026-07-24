@@ -27,6 +27,20 @@ Este proyecto usa `socket.io`, que por debajo usa WebSocket pero agrega comodida
 automática si se corta la conexión, un plan B (usar peticiones normales en vez de WebSocket) si el
 navegador o la red no lo permiten, y un sistema simple de eventos con nombre.
 
+### Qué es un namespace
+
+Antes del código, una palabra que vas a ver todo el tiempo de acá en adelante: **namespace**
+("espacio de nombres"). La idea, en general, fuera de Socket.IO: cuando varias cosas podrían
+llamarse igual y confundirse entre sí, las agrupás bajo un espacio separado para que no choquen —
+como tener una carpeta `pong/` y una carpeta `snake/` en vez de tirar todos los archivos sueltos
+mezclados en un mismo lugar.
+
+En Socket.IO puntualmente, un namespace es un **canal de comunicación aparte, dentro del mismo
+servidor y la misma conexión** — no es un servidor nuevo ni un puerto distinto, es una separación
+lógica. Cada juego de este arcade tiene el suyo (`/pong`, `/snake`, `/cascada`...), así un evento
+`gameState` de Pong nunca se mezcla con uno de Snake, aunque los dos viajen por la misma conexión
+de red hacia el mismo servidor.
+
 Servidor — este es el código real de `games/pong/server.js`, simplificado:
 
 ```js
