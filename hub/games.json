@@ -47,9 +47,9 @@
   {
     "id": "trivia",
     "nombre": "Trivia",
-    "descripcion": "8 preguntas contra el reloj. Modo solo (guarda tu mejor puntaje). Salas con codigo en camino.",
+    "descripcion": "8 preguntas contra el reloj. Modo solo, o en salas: creas o te unis con un codigo, ranking en vivo para todos.",
     "dificultad": 5,
-    "tecnologias": ["localstorage"],
+    "tecnologias": ["localstorage", "websocket", "salas"],
     "estado": "jugable",
     "ruta": "/games/trivia/"
   },
