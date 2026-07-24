@@ -1,11 +1,13 @@
-# 14 – La lógica de los juegos en tiempo real (Pong, Snake, Cascada, Buscaminas, Blastzone y Trivia)
+# 14 – La lógica de los juegos en tiempo real
 
-Con estos seis juegos ya construidos, acá está el patrón que **comparten** — para que cuando armes
-el próximo juego en tiempo real (`Turno`, etc.) sepas qué copiar tal cual y qué es específico de
-cada juego. Buscaminas rompe dos de las reglas a propósito, y Trivia agrega una pieza nueva (salas)
-— esas excepciones están marcadas más abajo, léelas también. Blastzone es el que más se parece al
-patrón base: sirve como buen punto de partida si tu próximo juego es competitivo 1v1 con algo que
-avanza solo con el tiempo (acá, la mecha de las bombas).
+Con Pong, Snake, Cascada, Buscaminas, Blastzone, Trivia y Dibuja y Adivina ya construidos, acá está
+el patrón que **comparten** — para que cuando armes el próximo juego en tiempo real (`Turno`, etc.)
+sepas qué copiar tal cual y qué es específico de cada juego. Buscaminas rompe dos de las reglas a
+propósito, Trivia agrega una pieza nueva (salas), y Dibuja y Adivina reusa las salas de Trivia pero
+suma turnos rotativos y una forma de excluir al emisor de un evento — esas excepciones están
+marcadas más abajo, léelas también. Blastzone es el que más se parece al patrón base: sirve como
+buen punto de partida si tu próximo juego es competitivo 1v1 con algo que avanza solo con el tiempo
+(acá, la mecha de las bombas).
 
 ## El patrón, en 5 piezas
 
@@ -273,6 +275,36 @@ function showResults(room) {
 Cada sala tiene su propio `room.timer` — con salas, además, no hay UN loop global como en los
 juegos anteriores: **cada partida corre su propia cadena de tiempos**, independiente de las demás.
 
+## 9. `socket.to()` vs `namespace.to()`: quién recibe el evento
+
+`Dibuja y Adivina` reutiliza el patrón de salas de Trivia, pero agrega un detalle nuevo: cuando
+alguien dibuja, ese trazo tiene que llegarle a **todos los demás de la sala, menos a quien lo está
+dibujando** — esa persona ya lo ve en su propia pantalla mientras mueve el mouse/dedo/lápiz, no
+hace falta mandárselo de vuelta.
+
+Hasta ahora veníamos usando `namespace.to(codigo).emit(...)`, que manda el evento a **todos** los
+que están en esa sala, sin excepción:
+
+```js
+dibuja.to(room.code).emit('rondaInicio', { /* ... */ }); // le llega a TODOS, incluido quien dibuja
+```
+
+Para excluir a quien generó el evento, se usa `socket.to(...)` en vez de `namespace.to(...)` —
+`socket` es la conexión de quien mandó el mensaje, y `socket.to()` manda a la sala **sin
+devolvérselo a ese mismo socket**:
+
+```js
+// games/dibuja-y-adivina/server.js
+socket.on('trazoContinua', (data) => {
+  // ...validar que quien manda esto es el dibujante...
+  socket.to(room.code).emit('trazoContinua', { x: data.x, y: data.y }); // a todos MENOS a quien dibuja
+});
+```
+
+Regla práctica: si el emisor ya sabe lo que pasó (porque fue él quien lo hizo, como dibujar), usá
+`socket.to()`. Si el emisor también necesita enterarse como todos los demás (como el resultado de
+una ronda), usá `namespace.to()`.
+
 ## Lo que es específico de cada juego (no es parte del patrón)
 
 - **Pong**: los ángulos de rebote, la aceleración de la pelota, la cuenta regresiva de saque.
@@ -292,11 +324,16 @@ juegos anteriores: **cada partida corre su propia cadena de tiempos**, independi
   en el servidor con la hora en la que llegó la respuesta (no confiando en lo que diga el cliente
   sobre cuánto tardó), y que se ignora cualquier respuesta que no sea la primera de cada jugador
   por pregunta.
+- **Dibuja y Adivina**: el turno de "quién dibuja" rota entre los jugadores de la sala
+  (`room.order`), la palabra secreta se manda solo al que dibuja (`socket.emit`, no
+  `namespace.to`), y una ronda puede terminar antes de tiempo si todos los que adivinan ya
+  acertaron — no hace falta esperar el reloj si ya no queda nadie por adivinar.
 
 ## Cuándo este patrón NO aplica
 
-Los modos solo de Snake, Cascada, Buscaminas, Blastzone y Trivia (`solo.js` en cada carpeta) no
-siguen nada de esto — no hay namespace, no hay servidor, no hay roles. Todo el estado del juego
+Los modos solo de Snake, Cascada, Buscaminas, Blastzone, Trivia y Dibuja y Adivina (`solo.js` en
+cada carpeta) no siguen nada de esto — no hay namespace, no hay servidor, no hay roles. Todo el
+estado del juego
 vive directo en el navegador. Son la comparación perfecta para la regla de
 [10 – WebSockets vs HTTP](10-websockets-vs-http.md): un juego que un jugador solo puede jugar sin
 sincronizar nada con nadie no necesita servidor en absoluto.
