@@ -38,9 +38,9 @@
   {
     "id": "blastzone",
     "nombre": "Blastzone",
-    "descripcion": "Bombas con mecha, bloques destructibles y reaccion en cadena. Modo solo: encontra la salida escondida. Modo versus en camino.",
+    "descripcion": "Bombas con mecha, bloques destructibles y reaccion en cadena. Modo solo, o versus: el servidor controla la posicion para que nadie haga trampa.",
     "dificultad": 4,
-    "tecnologias": ["canvas", "localstorage"],
+    "tecnologias": ["canvas", "localstorage", "websocket"],
     "estado": "jugable",
     "ruta": "/games/blastzone/"
   },

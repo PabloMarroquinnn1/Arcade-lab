@@ -85,6 +85,7 @@ body {
 .score-tag.best { color: var(--neon-yellow); border-color: rgba(255, 204, 0, 0.4); }
 .score-tag.p1 { color: var(--neon-green); border-color: rgba(0, 255, 136, 0.4); }
 .score-tag.p2 { color: var(--neon-pink); border-color: rgba(255, 68, 102, 0.4); }
+.score-tag.dead { color: var(--text-dim); border-color: rgba(255, 255, 255, 0.1); }
 
 #stage {
   flex: 1 1 auto;
