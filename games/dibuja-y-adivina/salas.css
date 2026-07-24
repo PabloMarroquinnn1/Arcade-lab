@@ -1,0 +1,177 @@
+.game-card.wide {
+  max-width: 640px;
+}
+
+/* ---------- Entrada / lobby / ranking (compartido con el patron de Trivia) ---------- */
+
+.lobby-card {
+  text-align: center;
+}
+
+.room-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.room-form input {
+  font: inherit;
+  font-size: 1rem;
+  text-align: center;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.room-form input:focus {
+  outline: none;
+  border-color: var(--neon-green);
+}
+
+.room-code-display {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 6px;
+  color: var(--neon-yellow);
+  margin: 16px 0;
+}
+
+.players-list {
+  list-style: none;
+  margin: 16px 0;
+  color: var(--text-dim);
+}
+
+.error-text {
+  color: var(--neon-pink);
+  font-size: 0.85rem;
+  min-height: 1.2em;
+}
+
+.ranking-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  text-align: left;
+}
+
+.ranking-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--panel);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ranking-item.me {
+  border-color: rgba(0, 255, 136, 0.5);
+}
+
+.ranking-pos {
+  color: var(--neon-yellow);
+  margin-right: 10px;
+}
+
+.round-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.word-hint {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--neon-yellow);
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.word-hint.mine {
+  color: var(--neon-green);
+  letter-spacing: normal;
+}
+
+.draw-area {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto 14px;
+}
+
+#drawSurface {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 12px;
+  touch-action: none;
+}
+
+#drawSurface.mine {
+  cursor: crosshair;
+}
+
+.draw-tools {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.chat-log {
+  height: 160px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.chat-line strong {
+  color: var(--neon-green);
+}
+
+.chat-line.acierto {
+  color: var(--neon-yellow);
+  font-weight: 700;
+}
+
+.chat-form {
+  display: flex;
+  gap: 8px;
+}
+
+.chat-form input {
+  flex: 1;
+  font: inherit;
+  color: #ffffff;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.chat-form input:focus {
+  outline: none;
+  border-color: var(--neon-green);
+}
