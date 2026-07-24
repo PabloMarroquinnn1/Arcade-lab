@@ -52,19 +52,22 @@ Todavía queda para usarlo en:
 
 - Recordar el nombre que elige un jugador, sin pedírselo cada vez.
 - Recordar preferencias de la interfaz (ej. si prefiere controles de teclado o táctiles).
-- Un ranking **compartido** entre jugadores distintos ya no alcanza con esto — ese necesita
-  servidor + base de datos (llega con `Mazmorra`, el juego 10). El highscore de Snake es a
-  propósito solo tuyo, en tu navegador.
+- Un ranking **compartido** entre jugadores distintos ya no alcanza con esto — ese necesita que el
+  dato viva del lado del servidor, no en cada navegador por separado (ver
+  [15](15-estado-en-memoria-sin-base-de-datos.md)). El highscore de Snake es a propósito solo tuyo,
+  en tu navegador.
 
-## localStorage vs base de datos
+## localStorage vs estado del lado del servidor
 
-|                                 | localStorage                          | Base de datos (servidor) |
+|                                 | localStorage                          | Servidor (memoria o base de datos) |
 |---------------------------------|----------------------------------------|---------------------------|
 | Dónde vive                      | En el navegador de cada jugador        | En tu servidor |
 | Quién lo ve                     | Solo esa persona, en ese navegador     | Vos, desde cualquier dispositivo, compartido entre jugadores |
-| Sirve para                      | Preferencias locales, cache            | Puntajes globales, cuentas, ranking compartido |
+| Sirve para                      | Preferencias locales, cache            | Puntajes en vivo entre varios jugadores (memoria), o que sobrevivan un reinicio (base de datos) |
 | Confiable para lógica de juego  | No — el jugador puede editarlo desde la consola | Sí, es tu servidor el que decide |
 
-Por eso el leaderboard "de verdad" (comparar puntajes entre jugadores distintos) necesita servidor
-+ base de datos tarde o temprano — localStorage no alcanza porque cada quien tiene el suyo,
-aislado, y encima uno mismo podría editarlo para hacer trampa.
+Por eso un ranking **compartido** (comparar puntajes entre jugadores distintos, como el de Trivia)
+necesita que el puntaje viva en el servidor — localStorage no alcanza porque cada quien tiene el
+suyo, aislado, y encima uno mismo podría editarlo para hacer trampa. Pero ojo: eso ya lo resuelve
+tener el estado en la memoria del servidor, **sin que haga falta una base de datos todavía** — ver
+[15](15-estado-en-memoria-sin-base-de-datos.md) para la diferencia.

@@ -56,7 +56,8 @@ npm start                 # corre el script "start" definido en package.json
 - Si algún día agregamos CORS entre orígenes distintos: la librería `cors` (ver
   [06 – Qué es CORS](06-que-es-cors.md)) — todavía no hace falta, hub y juegos comparten origin.
 - Cuando lleguemos a `Mazmorra` con base de datos: algo como `better-sqlite3` o un cliente de
-  Postgres.
+  Postgres — hasta ahí, todo el estado de los juegos vive en memoria, sin ninguna librería de base
+  de datos (ver [15](15-estado-en-memoria-sin-base-de-datos.md)).
 
 ## Escribir tu propio código vs usar una librería
 
