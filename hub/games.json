@@ -56,11 +56,11 @@
   {
     "id": "dibuja-y-adivina",
     "nombre": "Dibuja y Adivina",
-    "descripcion": "Un jugador dibuja en canvas y transmite los trazos por socket, los demas adivinan por chat.",
+    "descripcion": "La compu dibuja de a poco, adivina que es contra el reloj. Modo con jugador dibujando en vivo en camino.",
     "dificultad": 6,
-    "tecnologias": ["websocket", "canvas"],
-    "estado": "proximamente",
-    "ruta": null
+    "tecnologias": ["canvas", "localstorage"],
+    "estado": "jugable",
+    "ruta": "/games/dibuja-y-adivina/"
   },
   {
     "id": "devora",
