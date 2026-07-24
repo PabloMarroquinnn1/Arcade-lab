@@ -1,16 +1,20 @@
-# 14 – La lógica de los juegos en tiempo real (Pong, Snake y Cascada)
+# 14 – La lógica de los juegos en tiempo real (Pong, Snake, Cascada y Buscaminas)
 
-Con Pong, Snake (modo 2 jugadores) y Cascada (modo versus) ya construidos, acá está el patrón que
-**los tres comparten** — para que cuando armes el próximo juego en tiempo real (Blastzone, Trivia,
-etc.) sepas qué copiar tal cual y qué es específico de cada juego.
+Con Pong, Snake (modo 2 jugadores), Cascada (modo versus) y Buscaminas (modo cooperativo) ya
+construidos, acá está el patrón que **comparten** — para que cuando armes el próximo juego en
+tiempo real (Blastzone, Trivia, etc.) sepas qué copiar tal cual y qué es específico de cada juego.
+Buscaminas rompe dos de las reglas de los otros tres a propósito — esas excepciones están marcadas
+más abajo, léelas también.
 
 ## El patrón, en 5 piezas
 
 1. Un namespace de Socket.IO por juego.
 2. El servidor es la única fuente de verdad (*server authority*, ver
    [11](11-arquitectura-cliente-servidor.md)).
-3. Un loop a intervalo fijo que avanza el juego y manda el estado completo.
-4. Roles: jugador 1 / jugador 2 / espectador, con reconexión.
+3. Un loop a intervalo fijo que avanza el juego y manda el estado completo — **salvo que el juego
+   no tenga nada que avanzar solo** (ver la sección 6).
+4. Roles: jugador 1 / jugador 2 / espectador, con reconexión — **salvo que el juego sea
+   cooperativo entre N personas en vez de competitivo 1v1** (ver la sección 4).
 5. El cliente solo manda inputs y dibuja — nunca decide el resultado.
 
 ## 1. Un namespace por juego
@@ -21,6 +25,7 @@ etc.) sepas qué copiar tal cual y qué es específico de cada juego.
 require('./games/pong/server')(io);
 require('./games/snake/server')(io);
 require('./games/cascada/server')(io);
+require('./games/buscaminas/server')(io);
 ```
 
 Y cada uno se cuelga de su propio namespace en vez del namespace por defecto:
@@ -53,6 +58,9 @@ Ninguno de los dos juegos deja que el cliente decida nada importante:
   esa víbora chocó contra la pared, contra sí misma o contra la otra.
 - En Cascada, el cliente manda "rotar" o "caída rápida" (`action`); el servidor decide si esa pieza
   entra ahí, si se completó una línea, y hasta le manda basura al tablero del rival.
+- En Buscaminas, el cliente manda "destapar esta celda" (`reveal`); el servidor decide qué hay ahí
+  y se lo manda de vuelta — el cliente ni siquiera **sabe** dónde están las minas hasta que se
+  revelan (`serializeBoard` en `games/buscaminas/server.js` nunca manda esa info de antemano).
 
 Si el cliente pudiera decidir el resultado, cualquiera podría hacer trampa editando el JS del
 navegador. Ver [11](11-arquitectura-cliente-servidor.md).
@@ -90,9 +98,32 @@ nuevo entero muy seguido, un frame perdido no importa (ya viene el siguiente); l
 que nunca se acumule una fila de estados viejos esperando a un cliente lento, porque eso generaría
 lag creciente.
 
-## 4. Roles y reconexión
+**Buscaminas usa `emit` normal (sin `volatile`) para el estado del tablero, a propósito:**
 
-El código de roles es casi idéntico entre los dos juegos — la primera persona que se conecta es
+```js
+// games/buscaminas/server.js
+buscaminas.emit('gameState', { /* ... */ }); // SIN volatile
+```
+
+Acá cada actualización es un evento puntual e importante (alguien destapó una celda), no un stream
+constante — si se pierde uno, no "ya viene el siguiente" enseguida, porque nada avanza solo. Perder
+ese mensaje significaría que un jugador se queda viendo un tablero desactualizado hasta el próximo
+clic de alguien. Por eso ahí sí conviene la entrega garantizada de `emit` normal.
+
+Los cursores de Buscaminas, en cambio, **sí** usan `volatile` — son puramente cosméticos, se mandan
+muy seguido, y perder una posición intermedia del mouse de nadie no importa:
+
+```js
+socket.broadcast.volatile.emit('cursor', { id: socket.id, color, x, y });
+```
+
+Regla práctica: `volatile` para streams frecuentes donde lo viejo se vuelve irrelevante enseguida
+(posición, cursores). `emit` normal para eventos puntuales que sí importan que lleguen (un destape,
+un resultado).
+
+## 4. Roles y reconexión (o: cooperativo en vez de 1v1)
+
+En Pong, Snake y Cascada el código de roles es casi idéntico — la primera persona que se conecta es
 `player1`, la segunda es `player2`, el resto son espectadores:
 
 ```js
@@ -108,6 +139,21 @@ Y si alguno de los dos jugadores se desconecta, la partida se reinicia y los rol
 nuevo entre quienes quedan conectados — así nadie se queda "colgado" esperando a alguien que ya se
 fue.
 
+**Buscaminas no usa este esquema.** No es 1 contra 1, es cooperativo entre cuantas personas se
+conecten — no hay "player1" ni "esperando rival". Cualquiera que entra ya es parte de la partida
+compartida, arranca de una:
+
+```js
+// games/buscaminas/server.js
+players[socket.id] = { socket, color };
+socket.emit('welcome', { color }); // le avisa su propio color, para su cursor
+broadcastPlayerCount(); // le muestra a todos cuantos hay conectados ahora
+```
+
+Esto es una decisión de diseño, no una limitación técnica: si tu próximo juego es competitivo 1v1
+(`Hundir la Flota`, `Turno`), usá el esquema de roles. Si es cooperativo (todos contra el tablero,
+no entre sí), usá el esquema de Buscaminas.
+
 ## 5. El cliente: mandar inputs, dibujar lo que llega
 
 Acá es donde Pong se diferencia de Snake y Cascada, y por una buena razón.
@@ -117,14 +163,39 @@ mezclando entre dos snapshots (`games/pong/client.js`, función `getRenderState`
 la pelota se mueve de forma continua a 60fps — sin interpolar, cualquier variación en la llegada de
 paquetes por red se ve como tirones.
 
-**Snake y Cascada** no interpolan: dibujan directo el último estado que llegó
-(`games/snake/duo.js`, `games/cascada/duo.js`). No hace falta, porque el movimiento ya es "a los
-saltos" por diseño — la víbora se mueve una celda entera cada 120ms, las piezas de Cascada caen una
-fila cada 500ms, así que no hay nada continuo que suavizar.
+**Snake, Cascada y Buscaminas** no interpolan: dibujan directo el último estado que llegó
+(`games/snake/duo.js`, `games/cascada/duo.js`, `games/buscaminas/coop.js`). No hace falta, porque
+el movimiento ya es "a los saltos" por diseño — la víbora se mueve una celda entera cada 120ms, las
+piezas de Cascada caen una fila cada 500ms, y en Buscaminas directamente no hay nada que se mueva
+solo (ver la sección 6). Nada continuo que suavizar.
 
 Regla práctica: si tu juego nuevo tiene movimiento continuo (algo tipo `Devora`), vas a necesitar
-interpolar como Pong. Si es a grilla o por turnos (`Hundir la Flota`, `Turno`), con dibujar el
-último estado alcanza, como Snake y Cascada.
+interpolar como Pong. Si es a grilla, por turnos o basado en clics (`Hundir la Flota`, `Turno`),
+con dibujar el último estado alcanza.
+
+## 6. Cuándo no hace falta loop: juegos por eventos
+
+Pong, Snake y Cascada tienen algo que se mueve **solo** con el tiempo (una pelota, la gravedad de
+una pieza) — por eso necesitan un `setInterval` empujando el juego para adelante todo el tiempo,
+haya o no haya inputs nuevos.
+
+Buscaminas no tiene nada de eso. Una celda no se destapa sola; el tablero está exactamente igual un
+segundo después de que alguien lo miró, a menos que alguien haga clic. Por eso
+`games/buscaminas/server.js` **no tiene ningún `setInterval`** — el servidor solo hace algo (y solo
+manda `gameState` nuevo) como reacción directa a un evento del cliente:
+
+```js
+socket.on('reveal', (data) => {
+  // ...validar...
+  handleReveal(data.r, data.c);
+  broadcastState(); // se manda SOLO porque paso esto, no cada X ms
+});
+```
+
+Regla práctica: si en tu juego "no pasa nada" cuando nadie toca nada, no necesita loop — que sea en
+tiempo real (varias personas viendo lo mismo en vivo) no significa que tenga que tickear. `Trivia`
+y `Turno` probablemente van a ser así también: reaccionan a que alguien responda o juegue una
+carta, no a que pase el tiempo.
 
 ## Lo que es específico de cada juego (no es parte del patrón)
 
@@ -135,11 +206,14 @@ interpolar como Pong. Si es a grilla o por turnos (`Hundir la Flota`, `Turno`), 
 - **Cascada**: la rotación de piezas (matriz 4x4 rotada, sin *wall-kick* — si al rotar no entra,
   simplemente no rota), y la mecánica de mandarle líneas de "basura" al rival cuando completás
   varias a la vez (`addGarbage` en `games/cascada/server.js`).
+- **Buscaminas**: el destape en cascada de zonas vacías (flood-fill), que las minas recién se
+  colocan después del primer clic de alguien (para que nunca pierdas en el primer intento), y que
+  nunca se le manda al cliente dónde están las minas hasta que se revelan.
 
 ## Cuándo este patrón NO aplica
 
-Los modos solo de Snake y Cascada (`games/snake/solo.js`, `games/cascada/solo.js`) no siguen nada
-de esto — no hay namespace, no hay servidor, no hay roles. Es un `setInterval` corriendo directo en
-el navegador, con todo el estado del juego viviendo ahí mismo. Son la comparación perfecta para la
-regla de [10 – WebSockets vs HTTP](10-websockets-vs-http.md): un juego que un jugador solo puede
-jugar sin sincronizar nada con nadie no necesita servidor en absoluto.
+Los modos solo de Snake, Cascada y Buscaminas (`solo.js` en cada carpeta) no siguen nada de esto —
+no hay namespace, no hay servidor, no hay roles. Todo el estado del juego vive directo en el
+navegador. Son la comparación perfecta para la regla de
+[10 – WebSockets vs HTTP](10-websockets-vs-http.md): un juego que un jugador solo puede jugar sin
+sincronizar nada con nadie no necesita servidor en absoluto.
