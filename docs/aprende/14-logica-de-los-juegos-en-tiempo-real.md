@@ -1,10 +1,11 @@
-# 14 – La lógica de los juegos en tiempo real (Pong, Snake, Cascada y Buscaminas)
+# 14 – La lógica de los juegos en tiempo real (Pong, Snake, Cascada, Buscaminas y Blastzone)
 
-Con Pong, Snake (modo 2 jugadores), Cascada (modo versus) y Buscaminas (modo cooperativo) ya
-construidos, acá está el patrón que **comparten** — para que cuando armes el próximo juego en
-tiempo real (Blastzone, Trivia, etc.) sepas qué copiar tal cual y qué es específico de cada juego.
-Buscaminas rompe dos de las reglas de los otros tres a propósito — esas excepciones están marcadas
-más abajo, léelas también.
+Con estos cinco juegos ya construidos, acá está el patrón que **comparten** — para que cuando
+armes el próximo juego en tiempo real (Trivia, Turno, etc.) sepas qué copiar tal cual y qué es
+específico de cada juego. Buscaminas rompe dos de las reglas a propósito — esas excepciones están
+marcadas más abajo, léelas también. Blastzone, en cambio, es el que más se parece al patrón base:
+sirve como buen punto de partida si tu próximo juego es competitivo 1v1 con algo que avanza solo
+con el tiempo (acá, la mecha de las bombas).
 
 ## El patrón, en 5 piezas
 
@@ -26,6 +27,7 @@ require('./games/pong/server')(io);
 require('./games/snake/server')(io);
 require('./games/cascada/server')(io);
 require('./games/buscaminas/server')(io);
+require('./games/blastzone/server')(io);
 ```
 
 Y cada uno se cuelga de su propio namespace en vez del namespace por defecto:
@@ -61,14 +63,19 @@ Ninguno de los dos juegos deja que el cliente decida nada importante:
 - En Buscaminas, el cliente manda "destapar esta celda" (`reveal`); el servidor decide qué hay ahí
   y se lo manda de vuelta — el cliente ni siquiera **sabe** dónde están las minas hasta que se
   revelan (`serializeBoard` en `games/buscaminas/server.js` nunca manda esa info de antemano).
+- En Blastzone, el cliente manda "muevete para arriba" (`move`); el servidor revisa que no haya
+  pasado muy poco tiempo desde tu último movimiento (`MOVE_COOLDOWN_MS`) antes de moverte. Sin ese
+  chequeo, un cliente modificado podría mandar `move` sin parar y moverse más rápido que todos —
+  justo lo que describe `games.json` para este juego: *"el servidor manda para que nadie haga
+  trampa con su posición"*.
 
 Si el cliente pudiera decidir el resultado, cualquiera podría hacer trampa editando el JS del
 navegador. Ver [11](11-arquitectura-cliente-servidor.md).
 
 ## 3. Loop a intervalo fijo + `volatile.emit`
 
-Los tres juegos corren un `setInterval` que avanza el juego y manda el estado completo — pero a
-velocidades distintas, según lo que necesita cada uno:
+Pong, Snake, Cascada y Blastzone corren un `setInterval` que avanza el juego y manda el estado
+completo — pero a velocidades distintas, según lo que necesita cada uno:
 
 ```js
 // Pong: 60 veces por segundo — la pelota se mueve continuo, necesita fluidez
@@ -82,14 +89,19 @@ gameLoopInterval = setInterval(gameLoop, TICK_MS); // TICK_MS = 120
 // dos les caigan las piezas igual de rapido, si no el mas lento arranca en
 // desventaja
 gameLoopInterval = setInterval(gameLoop, TICK_MS); // TICK_MS = 500
+
+// Blastzone: cada 100ms — no mueve nada por si solo, pero necesita revisar
+// seguido si a alguna bomba ya se le acabo la mecha
+gameLoopInterval = setInterval(gameLoop, TICK_MS); // TICK_MS = 100
 ```
 
-Los tres mandan el estado con `volatile.emit` en vez de `emit` normal:
+Todos mandan el estado con `volatile.emit` en vez de `emit` normal:
 
 ```js
 pong.volatile.emit('gameState', { /* ... */ });
 snake.volatile.emit('gameState', { /* ... */ });
 cascada.volatile.emit('gameState', { /* ... */ });
+blastzone.volatile.emit('gameState', { /* ... */ });
 ```
 
 `volatile` le dice a Socket.IO: "si el cliente está momentáneamente desconectado o atrasado, no
@@ -123,7 +135,7 @@ un resultado).
 
 ## 4. Roles y reconexión (o: cooperativo en vez de 1v1)
 
-En Pong, Snake y Cascada el código de roles es casi idéntico — la primera persona que se conecta es
+En Pong, Snake, Cascada y Blastzone el código de roles es casi idéntico — la primera persona que se conecta es
 `player1`, la segunda es `player2`, el resto son espectadores:
 
 ```js
@@ -175,9 +187,9 @@ con dibujar el último estado alcanza.
 
 ## 6. Cuándo no hace falta loop: juegos por eventos
 
-Pong, Snake y Cascada tienen algo que se mueve **solo** con el tiempo (una pelota, la gravedad de
-una pieza) — por eso necesitan un `setInterval` empujando el juego para adelante todo el tiempo,
-haya o no haya inputs nuevos.
+Pong, Snake, Cascada y Blastzone tienen algo que se mueve o avanza **solo** con el tiempo (una
+pelota, la gravedad de una pieza, la mecha de una bomba) — por eso necesitan un `setInterval`
+empujando el juego para adelante todo el tiempo, haya o no haya inputs nuevos.
 
 Buscaminas no tiene nada de eso. Una celda no se destapa sola; el tablero está exactamente igual un
 segundo después de que alguien lo miró, a menos que alguien haga clic. Por eso
@@ -209,11 +221,14 @@ carta, no a que pase el tiempo.
 - **Buscaminas**: el destape en cascada de zonas vacías (flood-fill), que las minas recién se
   colocan después del primer clic de alguien (para que nunca pierdas en el primer intento), y que
   nunca se le manda al cliente dónde están las minas hasta que se revelan.
+- **Blastzone**: la reacción en cadena entre bombas (si la explosión de una alcanza a otra, esa
+  también explota, aunque le quedara mecha), el bloque destructible que esconde la salida en el
+  modo solo, y el `MOVE_COOLDOWN_MS` que valida la velocidad de movimiento en el servidor.
 
 ## Cuándo este patrón NO aplica
 
-Los modos solo de Snake, Cascada y Buscaminas (`solo.js` en cada carpeta) no siguen nada de esto —
-no hay namespace, no hay servidor, no hay roles. Todo el estado del juego vive directo en el
-navegador. Son la comparación perfecta para la regla de
+Los modos solo de Snake, Cascada, Buscaminas y Blastzone (`solo.js` en cada carpeta) no siguen nada
+de esto — no hay namespace, no hay servidor, no hay roles. Todo el estado del juego vive directo en
+el navegador. Son la comparación perfecta para la regla de
 [10 – WebSockets vs HTTP](10-websockets-vs-http.md): un juego que un jugador solo puede jugar sin
 sincronizar nada con nadie no necesita servidor en absoluto.

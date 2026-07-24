@@ -38,11 +38,11 @@
   {
     "id": "blastzone",
     "nombre": "Blastzone",
-    "descripcion": "Grid, bombas con temporizador y colisiones. El servidor manda para que nadie haga trampa con su posicion.",
+    "descripcion": "Bombas con mecha, bloques destructibles y reaccion en cadena. Modo solo, o versus: el servidor controla la posicion para que nadie haga trampa.",
     "dificultad": 4,
-    "tecnologias": ["websocket", "canvas", "server-authority"],
-    "estado": "proximamente",
-    "ruta": null
+    "tecnologias": ["canvas", "localstorage", "websocket"],
+    "estado": "jugable",
+    "ruta": "/games/blastzone/"
   },
   {
     "id": "trivia",
