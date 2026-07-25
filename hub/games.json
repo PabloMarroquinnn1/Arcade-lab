@@ -74,11 +74,11 @@
   {
     "id": "hundir-la-flota",
     "nombre": "Hundir la Flota",
-    "descripcion": "Por turnos, dos jugadores, tableros ocultos. El servidor le esconde a cada jugador la info del otro.",
+    "descripcion": "Por turnos, tableros ocultos. Modo solo vs la compu. Modo con otro jugador real en camino.",
     "dificultad": 8,
-    "tecnologias": ["websocket", "estado-privado"],
-    "estado": "proximamente",
-    "ruta": null
+    "tecnologias": ["localstorage"],
+    "estado": "jugable",
+    "ruta": "/games/hundir-la-flota/"
   },
   {
     "id": "turno",
