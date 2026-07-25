@@ -122,6 +122,39 @@ canvas {
   .badge, .score-tag { font-size: 0.45rem; padding: 6px 10px; }
 }
 
+/* ---------- Ranking en vivo (modo mundo compartido) ---------- */
+
+.leaderboard {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  background: rgba(10, 10, 20, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 0.45rem;
+  min-width: 120px;
+}
+
+.leaderboard-title {
+  color: var(--neon-yellow);
+  margin-bottom: 2px;
+}
+
+.leaderboard-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--text-dim);
+}
+
+.leaderboard-item.me {
+  color: var(--neon-green);
+}
+
 /* ---------- Pantalla de selección de modo (index.html) ---------- */
 
 .menu-body {

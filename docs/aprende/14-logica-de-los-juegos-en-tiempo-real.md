@@ -1,12 +1,14 @@
 # 14 – La lógica de los juegos en tiempo real
 
-Con Pong, Snake, Cascada, Buscaminas, Blastzone, Trivia y Dibuja y Adivina ya construidos, acá está
-el patrón que **comparten** — para que cuando armes el próximo juego en tiempo real (`Turno`, etc.)
-sepas qué copiar tal cual y qué es específico de cada juego. Buscaminas rompe dos de las reglas a
-propósito, Trivia agrega una pieza nueva (salas), y Dibuja y Adivina reusa las salas de Trivia pero
-suma turnos rotativos y una forma de excluir al emisor de un evento — esas excepciones están
-marcadas más abajo, léelas también. Blastzone es el que más se parece al patrón base: sirve como
-buen punto de partida si tu próximo juego es competitivo 1v1 con algo que avanza solo con el tiempo
+Con Pong, Snake, Cascada, Buscaminas, Blastzone, Trivia, Dibuja y Adivina y Devora ya construidos,
+acá está el patrón que **comparten** — para que cuando armes el próximo juego en tiempo real
+(`Hundir la Flota`, `Turno`, etc.) sepas qué copiar tal cual y qué es específico de cada juego.
+Buscaminas rompe dos de las reglas a propósito, Trivia agrega una pieza nueva (salas), Dibuja y
+Adivina reusa las salas de Trivia pero suma turnos rotativos y una forma de excluir al emisor de un
+evento, y Devora combina el esquema "sin roles" de Buscaminas con el loop continuo de Pong — esas
+excepciones están marcadas más abajo, léelas también. Blastzone es el que más se parece al patrón
+base: sirve como buen punto de partida si tu próximo juego es competitivo 1v1 con algo que avanza
+solo con el tiempo
 (acá, la mecha de las bombas).
 
 ## El patrón, en 5 piezas
@@ -171,6 +173,12 @@ Esto es una decisión de diseño, no una limitación técnica: si tu próximo ju
 (`Hundir la Flota`, `Turno`), usá el esquema de roles. Si es cooperativo (todos contra el tablero,
 no entre sí), usá el esquema de Buscaminas.
 
+`Devora` (mundo compartido) usa el esquema de Buscaminas — cualquiera que entra ya es parte del
+mismo mundo, sin "esperando rival" — pero **compitiendo** en vez de cooperando: acá sí importa
+quién es más grande que quién. La diferencia con Buscaminas es otra: Devora tiene un loop
+(sección 3), porque las células se mueven solas apenas alguien manda hacia dónde ir; Buscaminas no
+tiene nada de eso.
+
 ## 5. El cliente: mandar inputs, dibujar lo que llega
 
 Acá es donde Pong se diferencia de Snake y Cascada, y por una buena razón.
@@ -328,12 +336,16 @@ una ronda), usá `namespace.to()`.
   (`room.order`), la palabra secreta se manda solo al que dibuja (`socket.emit`, no
   `namespace.to`), y una ronda puede terminar antes de tiempo si todos los que adivinan ya
   acertaron — no hace falta esperar el reloj si ya no queda nadie por adivinar.
+- **Devora**: el crecimiento (`radiusFor`/`speedFor`, más grande = más lento), la ventaja de
+  tamaño necesaria para comerse a alguien (15%, para que no sea un empate injusto), y que a quien
+  se come le da un respawn con un `setTimeout` en vez de sacarlo del juego — el mundo compartido
+  nunca para.
 
 ## Cuándo este patrón NO aplica
 
-Los modos solo de Snake, Cascada, Buscaminas, Blastzone, Trivia y Dibuja y Adivina (`solo.js` en
-cada carpeta) no siguen nada de esto — no hay namespace, no hay servidor, no hay roles. Todo el
-estado del juego
+Los modos solo de Snake, Cascada, Buscaminas, Blastzone, Trivia, Dibuja y Adivina y Devora
+(`solo.js` en cada carpeta) no siguen nada de esto — no hay namespace, no hay servidor, no hay
+roles. Todo el estado del juego
 vive directo en el navegador. Son la comparación perfecta para la regla de
 [10 – WebSockets vs HTTP](10-websockets-vs-http.md): un juego que un jugador solo puede jugar sin
 sincronizar nada con nadie no necesita servidor en absoluto.
