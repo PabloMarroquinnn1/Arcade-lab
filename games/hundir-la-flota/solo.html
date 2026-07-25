@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hundir la Flota Solo | Arcade Lab</title>
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="hud-left">
+        <a href="/" class="badge back-link">&#8592; Arcade</a>
+        <a href="index.html" class="badge back-link">Cambiar modo</a>
+      </div>
+      <div class="hud-center">
+        <span id="turnBadge" class="score-tag turn">Tu turno</span>
+      </div>
+      <div class="hud-right">
+        <span class="score-tag best">Mejor partida <span id="bestShots">--</span> disparos</span>
+      </div>
+    </header>
+
+    <main id="stage">
+      <div class="boards-row">
+        <div class="board-col">
+          <span class="board-label enemy">Tablero enemigo (disparale)</span>
+          <div id="enemyBoard" class="board"></div>
+        </div>
+        <div class="board-col">
+          <span class="board-label mine">Tu flota</span>
+          <div id="myBoard" class="board"></div>
+        </div>
+      </div>
+    </main>
+
+    <footer id="controls">
+      <span>Hacé click en el tablero enemigo para disparar. Hundí toda su flota antes de que hundan la tuya.</span>
+    </footer>
+
+    <div id="overlay" class="overlay-message">
+      <div class="overlay-card">
+        <div id="overlayTitle" class="overlay-title"></div>
+        <p id="overlaySub" class="overlay-sub"></p>
+        <button class="primary-btn" id="retryBtn" type="button">Jugar de nuevo</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="solo.js?v=1"></script>
+</body>
+</html>

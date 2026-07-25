@@ -1,0 +1,363 @@
+:root {
+  --bg: #0a0a14;
+  --panel: rgba(255, 255, 255, 0.04);
+  --neon-green: #00ff88;
+  --neon-pink: #ff4466;
+  --neon-yellow: #ffcc00;
+  --text-dim: #8a8aa0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(0, 255, 136, 0.07), transparent 60%),
+    radial-gradient(1000px 500px at 50% 110%, rgba(255, 68, 102, 0.07), transparent 60%),
+    var(--bg);
+  color: #ffffff;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.badge {
+  font-size: 0.8rem;
+  color: var(--neon-yellow);
+  background: var(--panel);
+  border: 1px solid rgba(255, 204, 0, 0.35);
+  border-radius: 999px;
+  padding: 7px 14px;
+  white-space: nowrap;
+}
+
+.back-link {
+  text-decoration: none;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+#app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+#hud {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  flex-wrap: wrap;
+}
+
+.hud-left, .hud-right, .hud-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.score-tag {
+  font-size: 0.8rem;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 7px 12px;
+  white-space: nowrap;
+}
+
+.score-tag.turn { color: var(--neon-green); border-color: rgba(0, 255, 136, 0.4); }
+.score-tag.best { color: var(--neon-yellow); border-color: rgba(255, 204, 0, 0.4); }
+
+#stage {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  overflow: auto;
+}
+
+.boards-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.board-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.board-label {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.board-label.mine { color: var(--neon-green); }
+.board-label.enemy { color: var(--neon-pink); }
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(10, 24px);
+  grid-template-rows: repeat(10, 24px);
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cell {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 3px;
+  user-select: none;
+}
+
+.cell.water {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cell.ship {
+  background: rgba(0, 255, 136, 0.25);
+}
+
+.cell.clickable {
+  cursor: pointer;
+}
+
+.cell.clickable:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.cell.hit {
+  background: rgba(255, 68, 102, 0.35);
+  color: var(--neon-pink);
+}
+
+.cell.sunk {
+  background: rgba(255, 68, 102, 0.55);
+  color: #ffffff;
+}
+
+.cell.miss {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-dim);
+}
+
+#controls {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 12px 16px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.overlay-message {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 5, 12, 0.75);
+  z-index: 10;
+}
+
+.overlay-message.visible {
+  display: flex;
+}
+
+.overlay-card {
+  text-align: center;
+  padding: 24px 32px;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+}
+
+.overlay-title {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+.overlay-title.win { color: var(--neon-green); }
+.overlay-title.lose { color: var(--neon-pink); }
+
+.overlay-sub {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+.primary-btn {
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0a0a14;
+  background: var(--neon-green);
+  border: none;
+  border-radius: 999px;
+  padding: 12px 24px;
+  cursor: pointer;
+}
+
+.primary-btn:hover {
+  filter: brightness(1.1);
+}
+
+/* ---------- Salas ---------- */
+
+.lobby-card, .final-card {
+  text-align: center;
+}
+
+.room-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.room-form input {
+  font: inherit;
+  font-size: 1rem;
+  text-align: center;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.room-form input:focus {
+  outline: none;
+  border-color: var(--neon-green);
+}
+
+.room-code-display {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 6px;
+  color: var(--neon-yellow);
+  margin: 16px 0;
+}
+
+.players-list {
+  list-style: none;
+  margin: 16px 0;
+  color: var(--text-dim);
+}
+
+.error-text {
+  color: var(--neon-pink);
+  font-size: 0.85rem;
+  min-height: 1.2em;
+}
+
+.final-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.final-sub {
+  color: var(--text-dim);
+  margin-bottom: 24px;
+}
+
+/* ---------- Pantalla de selección de modo (index.html) ---------- */
+
+.menu-body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.menu {
+  position: relative;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+
+.menu-back {
+  position: absolute;
+  top: -48px;
+  left: 0;
+}
+
+.menu-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--neon-green);
+  text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+  margin-bottom: 10px;
+}
+
+.menu-sub {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  margin-bottom: 32px;
+}
+
+.menu-options {
+  display: grid;
+  gap: 14px;
+}
+
+.menu-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  text-decoration: none;
+  padding: 18px 20px;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: border-color 0.15s ease;
+}
+
+.menu-card:hover {
+  border-color: rgba(0, 255, 136, 0.5);
+}
+
+.menu-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--neon-green);
+}
+
+.menu-card-desc {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
