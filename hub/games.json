@@ -65,11 +65,11 @@
   {
     "id": "devora",
     "nombre": "Devora",
-    "descripcion": "Bolitas que crecen comiendose entre si. Mundo compartido, el servidor corre un game loop a varios ticks por segundo.",
+    "descripcion": "Comé para crecer, esquivá lo que todavía es mas grande que vos. Modo solo. Mundo compartido en camino.",
     "dificultad": 7,
-    "tecnologias": ["websocket", "canvas", "game-loop"],
-    "estado": "proximamente",
-    "ruta": null
+    "tecnologias": ["canvas", "localstorage"],
+    "estado": "jugable",
+    "ruta": "/games/devora/"
   },
   {
     "id": "hundir-la-flota",
