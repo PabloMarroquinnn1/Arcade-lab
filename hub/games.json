@@ -65,9 +65,9 @@
   {
     "id": "devora",
     "nombre": "Devora",
-    "descripcion": "Comé para crecer, esquivá lo que todavía es mas grande que vos. Modo solo. Mundo compartido en camino.",
+    "descripcion": "Comé para crecer. Modo solo, o mundo compartido: todos entran al mismo mapa y se comen entre si en vivo.",
     "dificultad": 7,
-    "tecnologias": ["canvas", "localstorage"],
+    "tecnologias": ["canvas", "localstorage", "websocket"],
     "estado": "jugable",
     "ruta": "/games/devora/"
   },
