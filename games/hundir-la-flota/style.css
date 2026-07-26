@@ -231,6 +231,8 @@ body {
 /* ---------- Salas ---------- */
 
 .lobby-card, .final-card {
+  max-width: 420px;
+  margin: 0 auto;
   text-align: center;
 }
 

@@ -1,15 +1,15 @@
 # 14 – La lógica de los juegos en tiempo real
 
-Con Pong, Snake, Cascada, Buscaminas, Blastzone, Trivia, Dibuja y Adivina y Devora ya construidos,
-acá está el patrón que **comparten** — para que cuando armes el próximo juego en tiempo real
-(`Hundir la Flota`, `Turno`, etc.) sepas qué copiar tal cual y qué es específico de cada juego.
-Buscaminas rompe dos de las reglas a propósito, Trivia agrega una pieza nueva (salas), Dibuja y
-Adivina reusa las salas de Trivia pero suma turnos rotativos y una forma de excluir al emisor de un
-evento, y Devora combina el esquema "sin roles" de Buscaminas con el loop continuo de Pong — esas
+Con Pong, Snake, Cascada, Buscaminas, Blastzone, Trivia, Dibuja y Adivina, Devora y Hundir la Flota
+ya construidos, acá está el patrón que **comparten** — para que cuando armes el próximo juego en
+tiempo real (`Turno`, etc.) sepas qué copiar tal cual y qué es específico de cada juego. Buscaminas
+rompe dos de las reglas a propósito, Trivia agrega una pieza nueva (salas), Dibuja y Adivina reusa
+las salas de Trivia pero suma turnos rotativos y una forma de excluir al emisor de un evento, Devora
+combina el esquema "sin roles" de Buscaminas con el loop continuo de Pong, y Hundir la Flota
+combina las salas de Trivia (pero topeadas a 2 jugadores) con el "sin loop" de Buscaminas — esas
 excepciones están marcadas más abajo, léelas también. Blastzone es el que más se parece al patrón
 base: sirve como buen punto de partida si tu próximo juego es competitivo 1v1 con algo que avanza
-solo con el tiempo
-(acá, la mecha de las bombas).
+solo con el tiempo (acá, la mecha de las bombas).
 
 ## El patrón, en 5 piezas
 
@@ -217,6 +217,10 @@ socket.on('reveal', (data) => {
 });
 ```
 
+`Hundir la Flota` es igual: nada se mueve solo, un tablero no cambia hasta que alguien dispara. Es
+por turnos (además, con salas de exactamente 2 jugadores) y **tampoco** tiene `setInterval` —
+`games/hundir-la-flota/server.js` solo reacciona al evento `disparar`.
+
 Regla práctica: si en tu juego "no pasa nada" cuando nadie toca nada, no necesita loop — que sea en
 tiempo real (varias personas viendo lo mismo en vivo) no significa que tenga que tickear. `Turno`
 probablemente va a ser así también: reacciona a que alguien juegue una carta, no a que pase el
@@ -340,12 +344,15 @@ una ronda), usá `namespace.to()`.
   tamaño necesaria para comerse a alguien (15%, para que no sea un empate injusto), y que a quien
   se come le da un respawn con un `setTimeout` en vez de sacarlo del juego — el mundo compartido
   nunca para.
+- **Hundir la Flota**: la ubicación de las flotas es al azar (sin colocación manual, misma
+  simplificación que la rotación de Cascada), el máximo de 2 jugadores por sala (`unirseSala`
+  rechaza a un tercero), y que el turno pasa al rival después de CADA disparo, acierte o no.
 
 ## Cuándo este patrón NO aplica
 
-Los modos solo de Snake, Cascada, Buscaminas, Blastzone, Trivia, Dibuja y Adivina y Devora
-(`solo.js` en cada carpeta) no siguen nada de esto — no hay namespace, no hay servidor, no hay
-roles. Todo el estado del juego
+Los modos solo de Snake, Cascada, Buscaminas, Blastzone, Trivia, Dibuja y Adivina, Devora y Hundir
+la Flota (`solo.js` en cada carpeta) no siguen nada de esto — no hay namespace, no hay servidor, no
+hay roles. Todo el estado del juego
 vive directo en el navegador. Son la comparación perfecta para la regla de
 [10 – WebSockets vs HTTP](10-websockets-vs-http.md): un juego que un jugador solo puede jugar sin
 sincronizar nada con nadie no necesita servidor en absoluto.
