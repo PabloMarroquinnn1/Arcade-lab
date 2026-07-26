@@ -37,7 +37,11 @@ function pickWord() {
 module.exports = function attachDibuja(io) {
   const dibuja = io.of('/dibuja-y-adivina');
 
-  const rooms = {};
+  // Map en vez de objeto {} a proposito: el codigo de sala lo escribe el
+  // cliente, y en un objeto plano una clave como "__proto__" puede pisar
+  // cosas del propio JavaScript. Un Map no tiene ese problema — ver
+  // docs/aprende/15-estado-en-memoria-sin-base-de-datos.md.
+  const rooms = new Map();
   const socketRoom = {};
   const allSockets = {};
 
@@ -48,7 +52,7 @@ module.exports = function attachDibuja(io) {
       for (let i = 0; i < ROOM_CODE_LENGTH; i++) {
         code += ROOM_CODE_CHARS[Math.floor(Math.random() * ROOM_CODE_CHARS.length)];
       }
-    } while (rooms[code]);
+    } while (rooms.has(code));
     return code;
   }
 
@@ -67,7 +71,7 @@ module.exports = function attachDibuja(io) {
       roundStartAt: 0,
       timer: null,
     };
-    rooms[code] = room;
+    rooms.set(code, room);
     return room;
   }
 
@@ -94,7 +98,7 @@ module.exports = function attachDibuja(io) {
   function destroyRoomIfEmpty(room) {
     if (Object.keys(room.players).length === 0) {
       clearRoomTimer(room);
-      delete rooms[room.code];
+      rooms.delete(room.code);
       return true;
     }
     return false;
@@ -171,7 +175,38 @@ module.exports = function attachDibuja(io) {
     console.log(`Dibuja: connected ${socket.id}`);
     allSockets[socket.id] = socket;
 
+    // Si el socket ya estaba en otra sala (crea una sala, se arrepiente, y
+    // crea/se une a otra sin pasar por 'disconnect'), lo sacamos primero.
+    // Sin esto, la sala vieja queda huerfana para siempre — alguien podria
+    // crear salas en bucle y agotar la memoria del servidor.
+    function leaveRoom(socket) {
+      const code = socketRoom[socket.id];
+      if (!code) return;
+      const room = rooms.get(code);
+      delete socketRoom[socket.id];
+      if (!room) return;
+
+      const wasDrawing = room.status === 'drawing';
+      const wasDrawer = room.drawerId === socket.id;
+
+      delete room.players[socket.id];
+      socket.leave(code);
+
+      if (destroyRoomIfEmpty(room)) return;
+
+      if (room.hostId === socket.id) {
+        room.hostId = Object.keys(room.players)[0];
+      }
+
+      if (wasDrawing && wasDrawer) {
+        endRound(room); // se fue quien dibujaba, cerramos la ronda ya
+      } else {
+        broadcastLobby(room);
+      }
+    }
+
     socket.on('crearSala', (data) => {
+      leaveRoom(socket);
       const nombre = (data && data.nombre ? String(data.nombre) : 'Jugador').slice(0, 20);
       const room = createRoom(socket.id, nombre);
       socketRoom[socket.id] = room.code;
@@ -181,13 +216,14 @@ module.exports = function attachDibuja(io) {
     });
 
     socket.on('unirseSala', (data) => {
-      const codigo = data && typeof data.codigo === 'string' ? data.codigo.toUpperCase() : '';
+      const codigo = data && typeof data.codigo === 'string' ? data.codigo.toUpperCase().slice(0, ROOM_CODE_LENGTH) : '';
       const nombre = (data && data.nombre ? String(data.nombre) : 'Jugador').slice(0, 20);
-      const room = rooms[codigo];
+      const room = rooms.get(codigo);
 
       if (!room) return socket.emit('errorSala', { mensaje: 'Esa sala no existe.' });
       if (room.status !== 'lobby') return socket.emit('errorSala', { mensaje: 'Esa partida ya empezó.' });
 
+      leaveRoom(socket);
       room.players[socket.id] = { nombre, puntaje: 0 };
       socketRoom[socket.id] = room.code;
       socket.join(room.code);
@@ -196,7 +232,7 @@ module.exports = function attachDibuja(io) {
     });
 
     socket.on('empezarPartida', () => {
-      const room = rooms[socketRoom[socket.id]];
+      const room = rooms.get(socketRoom[socket.id]);
       if (!room || room.hostId !== socket.id || room.status !== 'lobby') return;
       if (Object.keys(room.players).length < 2) {
         return socket.emit('errorSala', { mensaje: 'Necesitás al menos 2 jugadores para empezar.' });
@@ -208,34 +244,34 @@ module.exports = function attachDibuja(io) {
     // retransmiten a los demas de la sala SIN mandarselos de vuelta a quien
     // los mando (el ya los ve localmente mientras dibuja).
     socket.on('trazoInicio', (data) => {
-      const room = rooms[socketRoom[socket.id]];
+      const room = rooms.get(socketRoom[socket.id]);
       if (!room || room.status !== 'drawing' || room.drawerId !== socket.id) return;
       if (!data || typeof data.x !== 'number' || typeof data.y !== 'number') return;
       socket.to(room.code).emit('trazoInicio', { x: data.x, y: data.y });
     });
 
     socket.on('trazoContinua', (data) => {
-      const room = rooms[socketRoom[socket.id]];
+      const room = rooms.get(socketRoom[socket.id]);
       if (!room || room.status !== 'drawing' || room.drawerId !== socket.id) return;
       if (!data || typeof data.x !== 'number' || typeof data.y !== 'number') return;
       socket.to(room.code).emit('trazoContinua', { x: data.x, y: data.y });
     });
 
     socket.on('trazoFin', () => {
-      const room = rooms[socketRoom[socket.id]];
+      const room = rooms.get(socketRoom[socket.id]);
       if (!room || room.status !== 'drawing' || room.drawerId !== socket.id) return;
       socket.to(room.code).emit('trazoFin');
     });
 
     socket.on('limpiarCanvas', () => {
-      const room = rooms[socketRoom[socket.id]];
+      const room = rooms.get(socketRoom[socket.id]);
       if (!room || room.status !== 'drawing' || room.drawerId !== socket.id) return;
       socket.to(room.code).emit('limpiarCanvas');
     });
 
     // ---------- Chat / adivinanzas ----------
     socket.on('mensaje', (data) => {
-      const room = rooms[socketRoom[socket.id]];
+      const room = rooms.get(socketRoom[socket.id]);
       if (!room || room.status !== 'drawing') return;
       if (socket.id === room.drawerId) return; // el que dibuja no chatea, para no arruinar
       if (!data || typeof data.texto !== 'string' || !data.texto.trim()) return;
@@ -271,31 +307,5 @@ module.exports = function attachDibuja(io) {
       delete allSockets[socket.id];
       leaveRoom(socket);
     });
-
-    function leaveRoom(socket) {
-      const code = socketRoom[socket.id];
-      if (!code) return;
-      const room = rooms[code];
-      delete socketRoom[socket.id];
-      if (!room) return;
-
-      const wasDrawing = room.status === 'drawing';
-      const wasDrawer = room.drawerId === socket.id;
-
-      delete room.players[socket.id];
-      socket.leave(code);
-
-      if (destroyRoomIfEmpty(room)) return;
-
-      if (room.hostId === socket.id) {
-        room.hostId = Object.keys(room.players)[0];
-      }
-
-      if (wasDrawing && wasDrawer) {
-        endRound(room); // se fue quien dibujaba, cerramos la ronda ya
-      } else {
-        broadcastLobby(room);
-      }
-    }
   });
 };
