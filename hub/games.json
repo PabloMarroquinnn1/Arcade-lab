@@ -83,11 +83,11 @@
   {
     "id": "turno",
     "nombre": "Turno",
-    "descripcion": "Cartas por turnos estilo mazo clasico. Reglas y jugadas validadas en el servidor, con reconexion.",
+    "descripcion": "Cartas por turnos estilo mazo clasico. Modo solo vs 3 bots. Modo con jugadores reales en camino.",
     "dificultad": 9,
-    "tecnologias": ["websocket", "maquina-de-estados"],
-    "estado": "proximamente",
-    "ruta": null
+    "tecnologias": ["localstorage"],
+    "estado": "jugable",
+    "ruta": "/games/turno/"
   },
   {
     "id": "mazmorra",
