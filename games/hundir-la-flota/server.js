@@ -68,7 +68,11 @@ function allSunk(fleet) {
 module.exports = function attachFlota(io) {
   const flota = io.of('/hundir-la-flota');
 
-  const rooms = {};
+  // Map en vez de objeto {} a proposito: el codigo de sala lo escribe el
+  // cliente, y en un objeto plano una clave como "__proto__" puede pisar
+  // cosas del propio JavaScript. Un Map no tiene ese problema — ver
+  // docs/aprende/15-estado-en-memoria-sin-base-de-datos.md.
+  const rooms = new Map();
   const socketRoom = {};
   const allSockets = {};
 
@@ -79,7 +83,7 @@ module.exports = function attachFlota(io) {
       for (let i = 0; i < ROOM_CODE_LENGTH; i++) {
         code += ROOM_CODE_CHARS[Math.floor(Math.random() * ROOM_CODE_CHARS.length)];
       }
-    } while (rooms[code]);
+    } while (rooms.has(code));
     return code;
   }
 
@@ -95,7 +99,7 @@ module.exports = function attachFlota(io) {
       winner: null,
       timer: null,
     };
-    rooms[code] = room;
+    rooms.set(code, room);
     return room;
   }
 
@@ -122,7 +126,7 @@ module.exports = function attachFlota(io) {
   function destroyRoomIfEmpty(room) {
     if (Object.keys(room.players).length === 0) {
       clearRoomTimer(room);
-      delete rooms[room.code];
+      rooms.delete(room.code);
       return true;
     }
     return false;
@@ -183,7 +187,38 @@ module.exports = function attachFlota(io) {
     console.log(`Flota: connected ${socket.id}`);
     allSockets[socket.id] = socket;
 
+    // Si el socket ya estaba en otra sala (crea una sala, se arrepiente, y
+    // crea/se une a otra sin pasar por 'disconnect'), lo sacamos primero.
+    // Sin esto, la sala vieja queda huerfana para siempre — alguien podria
+    // crear salas en bucle y agotar la memoria del servidor.
+    function leaveRoom(socket) {
+      const code = socketRoom[socket.id];
+      if (!code) return;
+      const room = rooms.get(code);
+      delete socketRoom[socket.id];
+      if (!room) return;
+
+      const wasPlaying = room.status === 'playing';
+      const remaining = opponentId(room, socket.id);
+
+      delete room.players[socket.id];
+      socket.leave(code);
+
+      if (destroyRoomIfEmpty(room)) return;
+
+      if (room.hostId === socket.id) {
+        room.hostId = Object.keys(room.players)[0];
+      }
+
+      if (wasPlaying && remaining && room.players[remaining]) {
+        endGame(room, remaining, 'abandono');
+      } else {
+        broadcastLobby(room);
+      }
+    }
+
     socket.on('crearSala', (data) => {
+      leaveRoom(socket);
       const nombre = (data && data.nombre ? String(data.nombre) : 'Jugador').slice(0, 20);
       const room = createRoom(socket.id, nombre);
       socketRoom[socket.id] = room.code;
@@ -193,9 +228,9 @@ module.exports = function attachFlota(io) {
     });
 
     socket.on('unirseSala', (data) => {
-      const codigo = data && typeof data.codigo === 'string' ? data.codigo.toUpperCase() : '';
+      const codigo = data && typeof data.codigo === 'string' ? data.codigo.toUpperCase().slice(0, ROOM_CODE_LENGTH) : '';
       const nombre = (data && data.nombre ? String(data.nombre) : 'Jugador').slice(0, 20);
-      const room = rooms[codigo];
+      const room = rooms.get(codigo);
 
       if (!room) return socket.emit('errorSala', { mensaje: 'Esa sala no existe.' });
       if (room.status !== 'lobby') return socket.emit('errorSala', { mensaje: 'Esa partida ya empezó.' });
@@ -203,6 +238,7 @@ module.exports = function attachFlota(io) {
         return socket.emit('errorSala', { mensaje: 'Esa sala ya tiene 2 jugadores.' });
       }
 
+      leaveRoom(socket);
       room.players[socket.id] = { nombre, fleet: null, fired: null };
       socketRoom[socket.id] = room.code;
       socket.join(room.code);
@@ -211,7 +247,7 @@ module.exports = function attachFlota(io) {
     });
 
     socket.on('empezarPartida', () => {
-      const room = rooms[socketRoom[socket.id]];
+      const room = rooms.get(socketRoom[socket.id]);
       if (!room || room.hostId !== socket.id || room.status !== 'lobby') return;
       if (Object.keys(room.players).length !== 2) {
         return socket.emit('errorSala', { mensaje: 'Necesitás exactamente 2 jugadores para empezar.' });
@@ -220,7 +256,7 @@ module.exports = function attachFlota(io) {
     });
 
     socket.on('disparar', (data) => {
-      const room = rooms[socketRoom[socket.id]];
+      const room = rooms.get(socketRoom[socket.id]);
       if (!room || room.status !== 'playing' || room.turnId !== socket.id) return;
       if (!data || !Number.isInteger(data.r) || !Number.isInteger(data.c)) return;
       const { r, c } = data;
@@ -252,31 +288,5 @@ module.exports = function attachFlota(io) {
       delete allSockets[socket.id];
       leaveRoom(socket);
     });
-
-    function leaveRoom(socket) {
-      const code = socketRoom[socket.id];
-      if (!code) return;
-      const room = rooms[code];
-      delete socketRoom[socket.id];
-      if (!room) return;
-
-      const wasPlaying = room.status === 'playing';
-      const remaining = opponentId(room, socket.id);
-
-      delete room.players[socket.id];
-      socket.leave(code);
-
-      if (destroyRoomIfEmpty(room)) return;
-
-      if (room.hostId === socket.id) {
-        room.hostId = Object.keys(room.players)[0];
-      }
-
-      if (wasPlaying && remaining && room.players[remaining]) {
-        endGame(room, remaining, 'abandono');
-      } else {
-        broadcastLobby(room);
-      }
-    }
   });
 };

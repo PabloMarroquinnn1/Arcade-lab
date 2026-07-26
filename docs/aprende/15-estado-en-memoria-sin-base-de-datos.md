@@ -20,17 +20,30 @@ está prendido, esa variable **existe y se puede leer y modificar** desde cualqu
 archivo. Si el servidor se reinicia (o se cae), esa variable se pierde — vuelve a su valor inicial
 la próxima vez que arranque.
 
-Trivia usa el mismo truco, un poco más elaborado: en vez de dos variables sueltas, un objeto que
-agrupa todas las salas activas:
+Trivia usa el mismo truco, un poco más elaborado: en vez de dos variables sueltas, una estructura
+que agrupa todas las salas activas:
 
 ```js
 // games/trivia/server.js
-const rooms = {}; // codigo -> { code, hostId, players, questions, ... }
+const rooms = new Map(); // codigo -> { code, hostId, players, questions, ... }
 ```
 
-`rooms['4KJ3']` es, literalmente, ese objeto ahí sentado en RAM. Crear una sala es agregarle una
-entrada; unirse es buscarla (`rooms[codigo]`); cuando la última persona se va, se borra
-(`delete rooms[codigo]`) para no dejar basura acumulándose en memoria para siempre.
+`rooms.get('4KJ3')` es, literalmente, ir a buscar a ese objeto ahí sentado en RAM. Crear una sala es
+agregarle una entrada (`rooms.set(codigo, room)`); unirse es buscarla (`rooms.get(codigo)`); cuando
+la última persona se va, se borra (`rooms.delete(codigo)`) para no dejar basura acumulándose en
+memoria para siempre.
+
+**¿Por qué `Map` y no un objeto `{}`?** Acá el código de sala no lo elige el servidor — lo escribe
+el cliente cuando llama `unirseSala`. Un objeto plano de JS viene con propiedades heredadas de
+fábrica (`constructor`, `toString`, `__proto__`...), así que si alguien manda como código de sala el
+string `"constructor"`, `rooms['constructor']` no da `undefined` como uno esperaría de una sala que
+no existe — da la función `Object` heredada del prototipo. El código que sigue, pensado para trabajar
+con una sala de verdad, se rompe de formas raras en el mejor caso, o puede llegar a tirar abajo el
+proceso entero en el peor (justamente le pasó a este arcade: ver el bug real corregido en
+`games/blastzone/server.js` y `games/snake/server.js`, mismo problema pero con una dirección de
+movimiento en vez de un código de sala). Un `Map` no tiene propiedades heredadas — `rooms.get('constructor')`
+da `undefined`, tal cual se espera. Regla práctica: si la clave para buscar algo viene de afuera
+(un cliente, la red), usá `Map`; si la clave la elegís vos en el código, un objeto `{}` alcanza.
 
 ## Por qué esto alcanza (y cuándo no)
 
@@ -54,12 +67,16 @@ compara `localStorage` con "servidor + base de datos", pero ojo — el **servido
 datos, como todo lo que armamos hasta acá) ya alcanza para compartir estado en tiempo real entre
 varios jugadores. La base de datos entra recién cuando ese estado necesita persistir.
 
-## Objeto vs array: cuál usar para qué
+## Objeto, Map o array: cuál usar para qué
 
-En el código de arriba usamos un **objeto** (`rooms`), no un array, a propósito. La regla:
+La regla, juntando lo de arriba:
 
-- **Objeto**, cuando vas a **buscar algo por una clave que ya conocés** (el código de sala, el id
-  del socket). `rooms[codigo]` es instantáneo, no importa si hay 3 salas o 3000.
+- **Objeto**, cuando vas a **buscar algo por una clave que ya conocés y que elegís vos en el
+  código** (el id de un socket, por ejemplo — lo genera Socket.IO, no lo escribe un cliente
+  malicioso). `room.players[socketId]` es instantáneo, no importa si hay 3 jugadores o 3000.
+- **`Map`**, cuando la clave para buscar es la misma idea (búsqueda instantánea por clave), pero esa
+  clave **viene de afuera** — la escribe un cliente, como el código de sala. Ver la sección de
+  arriba.
 - **Array**, cuando te importa el **orden**, o necesitás recorrer/filtrar/ordenar todo el
   conjunto.
 

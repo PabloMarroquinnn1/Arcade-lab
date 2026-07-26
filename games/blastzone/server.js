@@ -229,11 +229,22 @@ module.exports = function attachBlastzone(io) {
     startGameLoop();
     broadcastRoles();
 
-    const DIRS = { up: [-1, 0], down: [1, 0], left: [0, -1], right: [0, 1] };
+    // Map en vez de objeto {} a proposito: la direccion la manda el cliente
+    // como string, y en un objeto plano un valor como "constructor" no da
+    // undefined (como uno esperaria) sino la funcion Object heredada del
+    // prototipo — eso llegaba a romper tryMove con coordenadas NaN y tirar
+    // abajo el proceso entero. Un Map no tiene esa trampa — ver
+    // docs/aprende/15-estado-en-memoria-sin-base-de-datos.md.
+    const DIRS = new Map([
+      ['up', [-1, 0]],
+      ['down', [1, 0]],
+      ['left', [0, -1]],
+      ['right', [0, 1]],
+    ]);
 
     socket.on('move', (data) => {
       if (state.status !== 'playing') return;
-      const dir = data && DIRS[data.direction];
+      const dir = data && DIRS.get(data.direction);
       if (!dir) return;
       if (socket.id === player1Id && state.p1.alive) tryMove(state.p1, dir[0], dir[1]);
       else if (socket.id === player2Id && state.p2.alive) tryMove(state.p2, dir[0], dir[1]);
