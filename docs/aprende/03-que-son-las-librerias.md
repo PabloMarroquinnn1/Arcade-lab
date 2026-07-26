@@ -55,13 +55,14 @@ npm start                 # corre el script "start" definido en package.json
 
 - Si algún día agregamos CORS entre orígenes distintos: la librería `cors` (ver
   [06 – Qué es CORS](06-que-es-cors.md)) — todavía no hace falta, hub y juegos comparten origin.
-- Cuando lleguemos a `Mazmorra` con base de datos: algo como `better-sqlite3` o un cliente de
-  Postgres — hasta ahí, todo el estado de los juegos vive en memoria, sin ninguna librería de base
-  de datos (ver [15](15-estado-en-memoria-sin-base-de-datos.md)).
+
+Por ahora todo el estado de los juegos vive en memoria, sin ninguna librería de base de datos (ver
+[15](15-estado-en-memoria-sin-base-de-datos.md)) — así se queda este arcade, no está planeado
+agregar persistencia.
 
 ## Escribir tu propio código vs usar una librería
 
 Regla práctica: si el problema es genérico y lo resolvió mucha gente antes que vos (servir
 archivos, parsear JSON, manejar reconexiones de socket), usa una librería. Si el problema es
-específico de tu juego (la física de la pelota de Pong, las reglas de Turno), eso lo escribís vos —
-ninguna librería sabe cómo querés que funcione tu juego.
+específico de tu juego (la física de la pelota de Pong, la reacción en cadena de las bombas de
+Blastzone), eso lo escribís vos — ninguna librería sabe cómo querés que funcione tu juego.

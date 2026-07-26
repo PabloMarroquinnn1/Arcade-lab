@@ -56,9 +56,9 @@ Cada archivo enseña un concepto y, cuando aplica, apunta a código real de este
 
 Detalle completo en [`docs/aprende/13-gitflow-en-este-repo.md`](docs/aprende/13-gitflow-en-este-repo.md).
 
-## Qué juegos hay planeados
+## Qué juegos hay
 
-La lista completa (10 juegos, de menor a mayor dificultad, con el estado de cada uno) está en
+La lista completa (9 juegos, de menor a mayor dificultad, con el estado de cada uno) está en
 [`hub/games.json`](hub/games.json) y se ve en vivo como tarjetas en la página principal del arcade
 — no la repetimos acá para no tener dos lugares desactualizándose por separado.
 
