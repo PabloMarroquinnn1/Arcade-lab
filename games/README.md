@@ -2,7 +2,7 @@
 
 Cada juego del arcade vive en su propia carpeta. Por ahora: `games/pong/`, `games/snake/`,
 `games/cascada/`, `games/buscaminas/`, `games/blastzone/`, `games/trivia/`,
-`games/dibuja-y-adivina/` y `games/devora/`.
+`games/dibuja-y-adivina/`, `games/devora/` y `games/hundir-la-flota/`.
 
 ## Dos tipos de juego, según si necesitan un servidor o no
 
@@ -21,14 +21,14 @@ dónde va el código de cada uno:
   del frontend en `games/<nombre>/`, estos juegos también agregan su lógica de servidor dentro de
   `server.js`.
 
-Snake, Cascada, Buscaminas, Blastzone, Trivia, Dibuja y Adivina y Devora, de hecho, tienen un modo
-de cada tipo a la vez: `solo.js` es 100% estático (ni siquiera abre un socket), y
-`duo.js`/`coop.js`/`salas.js`/`mundo.js` + `server.js` son en tiempo real, usando el mismo patrón
-que Pong. El detalle completo de ese patrón compartido — y de las excepciones que introducen
-Buscaminas (cooperativo en vez de 1v1, sin loop porque nada se mueve solo), Trivia (varias salas
-independientes en el mismo namespace), Dibuja y Adivina (turnos rotativos, excluir al emisor de un
-evento) y Devora (sin roles como Buscaminas, pero compitiendo en vez de cooperando, con loop
-continuo como Pong) — está en
+Snake, Cascada, Buscaminas, Blastzone, Trivia, Dibuja y Adivina, Devora y Hundir la Flota, de
+hecho, tienen un modo de cada tipo a la vez: `solo.js` es 100% estático (ni siquiera abre un
+socket), y `duo.js`/`coop.js`/`salas.js`/`mundo.js` + `server.js` son en tiempo real, usando el
+mismo patrón que Pong. El detalle completo de ese patrón compartido — y de las excepciones que
+introducen Buscaminas (cooperativo en vez de 1v1, sin loop porque nada se mueve solo), Trivia
+(varias salas independientes en el mismo namespace), Dibuja y Adivina (turnos rotativos, excluir al
+emisor de un evento), Devora (sin roles como Buscaminas, pero compitiendo en vez de cooperando, con
+loop continuo como Pong) y Hundir la Flota (salas topeadas a 2, sin loop como Buscaminas) — está en
 [`docs/aprende/14-logica-de-los-juegos-en-tiempo-real.md`](../docs/aprende/14-logica-de-los-juegos-en-tiempo-real.md)
 — léelo antes de armar el próximo juego con servidor, para copiar lo que ya funciona en vez de
 reinventarlo.

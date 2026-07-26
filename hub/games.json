@@ -74,9 +74,9 @@
   {
     "id": "hundir-la-flota",
     "nombre": "Hundir la Flota",
-    "descripcion": "Por turnos, tableros ocultos. Modo solo vs la compu. Modo con otro jugador real en camino.",
+    "descripcion": "Por turnos, tableros ocultos. Modo solo vs la compu, o en salas de a 2 contra otra persona real.",
     "dificultad": 8,
-    "tecnologias": ["localstorage"],
+    "tecnologias": ["localstorage", "websocket", "salas", "estado-privado"],
     "estado": "jugable",
     "ruta": "/games/hundir-la-flota/"
   },
