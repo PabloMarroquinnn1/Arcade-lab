@@ -5,12 +5,17 @@ const COUNTDOWN_MS = 3000;
 const RESTART_DELAY_MS = 5000;
 const START_LENGTH = 3;
 
-const DIRECTIONS = {
-  up: { x: 0, y: -1 },
-  down: { x: 0, y: 1 },
-  left: { x: -1, y: 0 },
-  right: { x: 1, y: 0 },
-};
+// Map en vez de objeto {} a proposito: la direccion la manda el cliente como
+// string, y en un objeto plano un valor como "constructor" no da undefined
+// (como uno esperaria) sino la funcion Object heredada del prototipo — eso
+// rompe la logica de movimiento en vez de ser ignorado. Un Map no tiene esa
+// trampa — ver docs/aprende/15-estado-en-memoria-sin-base-de-datos.md.
+const DIRECTIONS = new Map([
+  ['up', { x: 0, y: -1 }],
+  ['down', { x: 0, y: 1 }],
+  ['left', { x: -1, y: 0 }],
+  ['right', { x: 1, y: 0 }],
+]);
 
 function isOpposite(a, b) {
   return a.x === -b.x && a.y === -b.y;
@@ -45,8 +50,8 @@ module.exports = function attachSnake(io) {
   }
 
   function createRoundState() {
-    const p1 = makeSnake(8, Math.floor(GRID_ROWS / 2), DIRECTIONS.right);
-    const p2 = makeSnake(GRID_COLS - 9, Math.floor(GRID_ROWS / 2), DIRECTIONS.left);
+    const p1 = makeSnake(8, Math.floor(GRID_ROWS / 2), DIRECTIONS.get('right'));
+    const p2 = makeSnake(GRID_COLS - 9, Math.floor(GRID_ROWS / 2), DIRECTIONS.get('left'));
     return {
       p1,
       p2,
@@ -198,7 +203,7 @@ module.exports = function attachSnake(io) {
 
     socket.on('setDirection', (data) => {
       if (!data || typeof data.direction !== 'string') return;
-      const direction = DIRECTIONS[data.direction];
+      const direction = DIRECTIONS.get(data.direction);
       if (!direction) return;
       if (socket.id === player1Id) state.p1.nextDirection = direction;
       else if (socket.id === player2Id) state.p2.nextDirection = direction;
