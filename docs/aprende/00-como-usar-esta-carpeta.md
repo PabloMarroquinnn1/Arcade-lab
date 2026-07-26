@@ -22,6 +22,7 @@ Orden sugerido (cada uno da por hecho el anterior):
 13. [13 – Gitflow en este repo](13-gitflow-en-este-repo.md)
 14. [14 – La lógica de los juegos en tiempo real](14-logica-de-los-juegos-en-tiempo-real.md)
 15. [15 – Estado en memoria: cómo funciona sin base de datos](15-estado-en-memoria-sin-base-de-datos.md)
+16. [16 – Bugs de seguridad reales de este repo](16-bugs-de-seguridad-reales.md)
 
 No hace falta leerlos todos de una sentada. La idea es: cuando vayas a construir un juego nuevo y
 te trabes con un concepto, vienes aquí, lo lees, y vuelves al código. Todos tienen ejemplos que
