@@ -44,8 +44,8 @@ Vas a necesitar una base de datos de verdad recién cuando algo tenga que:
 
 - **Sobrevivir un reinicio del servidor** (un ranking global que no se resetea cada vez que hacés
   `docker compose up --build -d`).
-- **Compartirse entre sesiones separadas en el tiempo** (tu progreso en `Mazmorra`, para seguir
-  jugando mañana donde quedaste).
+- **Compartirse entre sesiones separadas en el tiempo** (por ejemplo, un progreso de juego que
+  tenés que poder retomar mañana donde lo dejaste).
 - **Ser demasiado grande para tener sentido en RAM** (no es nuestro caso — ni 1000 salas de Trivia
   ocupan memoria como para preocuparse).
 
