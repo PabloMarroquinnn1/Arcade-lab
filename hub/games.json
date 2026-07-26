@@ -79,23 +79,5 @@
     "tecnologias": ["localstorage", "websocket", "salas", "estado-privado"],
     "estado": "jugable",
     "ruta": "/games/hundir-la-flota/"
-  },
-  {
-    "id": "turno",
-    "nombre": "Turno",
-    "descripcion": "Cartas por turnos estilo mazo clasico. Modo solo vs 3 bots. Modo con jugadores reales en camino.",
-    "dificultad": 9,
-    "tecnologias": ["localstorage"],
-    "estado": "jugable",
-    "ruta": "/games/turno/"
-  },
-  {
-    "id": "mazmorra",
-    "nombre": "Mazmorra",
-    "descripcion": "Roguelike por turnos con mapa generado y progreso guardado por usuario. El proyecto final del arcade.",
-    "dificultad": 10,
-    "tecnologias": ["websocket", "base-de-datos", "auth"],
-    "estado": "proximamente",
-    "ruta": null
   }
 ]

@@ -1,8 +1,8 @@
 # 14 – La lógica de los juegos en tiempo real
 
 Con Pong, Snake, Cascada, Buscaminas, Blastzone, Trivia, Dibuja y Adivina, Devora y Hundir la Flota
-ya construidos, acá está el patrón que **comparten** — para que cuando armes el próximo juego en
-tiempo real (`Turno`, etc.) sepas qué copiar tal cual y qué es específico de cada juego. Buscaminas
+ya construidos (los 9 juegos de este arcade), acá está el patrón que **comparten** — para que si
+algún día agregás uno más sepas qué copiar tal cual y qué es específico de cada juego. Buscaminas
 rompe dos de las reglas a propósito, Trivia agrega una pieza nueva (salas), Dibuja y Adivina reusa
 las salas de Trivia pero suma turnos rotativos y una forma de excluir al emisor de un evento, Devora
 combina el esquema "sin roles" de Buscaminas con el loop continuo de Pong, y Hundir la Flota
@@ -35,6 +35,10 @@ require('./games/snake/server')(io);
 require('./games/cascada/server')(io);
 require('./games/buscaminas/server')(io);
 require('./games/blastzone/server')(io);
+require('./games/trivia/server')(io);
+require('./games/dibuja-y-adivina/server')(io);
+require('./games/devora/server')(io);
+require('./games/hundir-la-flota/server')(io);
 ```
 
 Y cada uno se cuelga de su propio namespace en vez del namespace por defecto:
@@ -170,8 +174,10 @@ broadcastPlayerCount(); // le muestra a todos cuantos hay conectados ahora
 ```
 
 Esto es una decisión de diseño, no una limitación técnica: si tu próximo juego es competitivo 1v1
-(`Hundir la Flota`, `Turno`), usá el esquema de roles. Si es cooperativo (todos contra el tablero,
-no entre sí), usá el esquema de Buscaminas.
+y no necesita salas (una sola partida global alcanza), usá el esquema de roles. Si es cooperativo
+(todos contra el tablero, no entre sí), usá el esquema de Buscaminas. `Hundir la Flota` es 1v1 mas
+terminó usando otra combinación — salas topeadas a 2, ver la sección 7 — porque quería partidas
+independientes identificadas por código, no una sola partida global como Pong.
 
 `Devora` (mundo compartido) usa el esquema de Buscaminas — cualquiera que entra ya es parte del
 mismo mundo, sin "esperando rival" — pero **compitiendo** en vez de cooperando: acá sí importa
@@ -195,8 +201,8 @@ piezas de Cascada caen una fila cada 500ms, y en Buscaminas directamente no hay 
 solo (ver la sección 6). Nada continuo que suavizar.
 
 Regla práctica: si tu juego nuevo tiene movimiento continuo (algo tipo `Devora`), vas a necesitar
-interpolar como Pong. Si es a grilla, por turnos o basado en clics (`Hundir la Flota`, `Turno`),
-con dibujar el último estado alcanza.
+interpolar como Pong. Si es a grilla, por turnos o basado en clics (como `Hundir la Flota`), con
+dibujar el último estado alcanza.
 
 ## 6. Cuándo no hace falta loop: juegos por eventos
 
@@ -222,9 +228,7 @@ por turnos (además, con salas de exactamente 2 jugadores) y **tampoco** tiene `
 `games/hundir-la-flota/server.js` solo reacciona al evento `disparar`.
 
 Regla práctica: si en tu juego "no pasa nada" cuando nadie toca nada, no necesita loop — que sea en
-tiempo real (varias personas viendo lo mismo en vivo) no significa que tenga que tickear. `Turno`
-probablemente va a ser así también: reacciona a que alguien juegue una carta, no a que pase el
-tiempo.
+tiempo real (varias personas viendo lo mismo en vivo) no significa que tenga que tickear.
 
 `Trivia`, en cambio, sí tiene algo que avanza solo — el tiempo para responder — pero **tampoco**
 usa `setInterval`. Usa algo más simple todavía: ver la sección 8.
