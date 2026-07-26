@@ -9,6 +9,22 @@ const httpServer = http.createServer(app);
 const io = new Server(httpServer);
 const PORT = process.env.PORT || 3000;
 
+// Red de seguridad: los 9 juegos comparten este mismo proceso de Node, asi
+// que si a uno se le escapa una excepcion sin capturar, la reaccion por
+// defecto de Node (apagar TODO el proceso) se lleva puestos a los otros 8 y
+// a cualquiera que este jugando en ellos - paso de verdad con un bug real de
+// Blastzone, ver docs/aprende/16-bugs-de-seguridad-reales.md. Loguear y
+// seguir vivo es peor practica que un try/catch bien puesto en el lugar
+// exacto (eso NO lo reemplaza), pero como ultimo recurso evita que un input
+// raro en un juego tire abajo a los demas.
+process.on('uncaughtException', (err) => {
+  console.error('uncaughtException (el proceso sigue vivo):', err);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('unhandledRejection (el proceso sigue vivo):', reason);
+});
+
 // no-cache: el navegador revalida siempre, para no mezclar HTML/JS viejo con
 // el nuevo mientras seguimos agregando juegos.
 const staticOptions = {
